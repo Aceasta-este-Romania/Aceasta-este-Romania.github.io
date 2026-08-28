@@ -127,12 +127,14 @@
     font-size:15px;cursor:pointer;font-family:inherit;line-height:1;}
   .letterpad .lp-row{display:flex;justify-content:center;gap:4px;margin-bottom:5px;}
   .letterpad .lp-row:last-child{margin-bottom:0;}
-  .letterpad .lp-key{flex:1;max-width:40px;aspect-ratio:1/1.2;background:#fff;border:2px solid #e6dcc0;border-radius:9px;
+  .letterpad .lp-key{flex:1;max-width:40px;height:var(--kh,46px);background:#fff;border:2px solid #e6dcc0;border-radius:9px;
     display:flex;align-items:center;justify-content:center;font-family:inherit;font-weight:800;font-size:17px;
     color:var(--ink);cursor:pointer;transition:.1s;padding:0;}
   .letterpad .lp-key:active{background:var(--orange);color:#fff;transform:scale(.92);}
   .letterpad .lp-key.diac{background:#fbf2dc;border-color:#ecd9a8;color:#b8860b;}
-  .letterpad .lp-key.del{background:#f6e2e0;border-color:#e9bdb9;color:var(--red);max-width:58px;flex:1.4;font-size:16px;}
+  .letterpad .lp-key.del{background:#f6e2e0;border-color:#e9bdb9;color:var(--red);max-width:62px;flex:1.5;}
+  /* iconița umple butonul proporțional, nu depinde de fontul de sistem */
+  .letterpad .lp-key.del .ico-del{width:30px;height:30px;display:block;}
   /* Cu tastatura deschisă, cuvintele lungi (6 rânduri) ajungeau sub ea.
      Cât e deschisă: conținutul urcă în sus, butoarele dispar (oricum sunt
      acoperite), iar pagina primește loc dedesubt ca să poată fi derulată. */
@@ -156,8 +158,9 @@
   }
   /* pe telefoanele scunde tastatura mânca 40% din ecran; o strângem */
   @media (max-height:730px){
-    .letterpad{padding:7px 8px calc(8px + env(safe-area-inset-bottom));}
-    .letterpad .lp-key{aspect-ratio:1/0.92;font-size:16px;}
+    .letterpad{padding:7px 8px calc(8px + env(safe-area-inset-bottom));--kh:40px;}
+    .letterpad .lp-key{font-size:16px;}
+    .letterpad .lp-key.del .ico-del{width:26px;height:26px;}
     .letterpad .lp-row{margin-bottom:4px;gap:3px;}
     .lp-head{margin-bottom:5px;}
     .lp-head .lp-title{font-size:10.5px;}
@@ -1285,10 +1288,20 @@ const letterpad=document.getElementById('letterpad'),letterpadBg=document.getEle
 let lpOnPick=null;
 (function buildLetterpad(){
   const wrap=document.getElementById('lpRows');
+  /* Iconiță desenată în loc de caracterul „⌫”: fontul Baloo 2 nu are glifa,
+     iar înlocuitorul ales de sistem se randa mult mai mic decât butonul. */
+  const ICO_STERGE=
+    '<svg class="ico-del" viewBox="0 0 24 24" fill="none" stroke="currentColor" '+
+    'stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+
+    '<path d="M9 5h12a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-7-7z"/>'+
+    '<path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/></svg>';
   wrap.innerHTML=QWERTY_ROWS.map(row=>
     '<div class="lp-row">'+row.map(ch=>{
-      const cls = ch==='⌫' ? 'lp-key del' : ('ĂÂÎȘȚ'.includes(ch)?'lp-key diac':'lp-key');
-      return '<button class="'+cls+'" data-ch="'+ch+'">'+ch+'</button>';
+      const sterge = ch==='⌫';
+      const cls = sterge ? 'lp-key del' : ('ĂÂÎȘȚ'.includes(ch)?'lp-key diac':'lp-key');
+      const eticheta = sterge ? ' aria-label="Șterge litera"' : ' aria-label="Litera '+ch+'"';
+      return '<button class="'+cls+'" data-ch="'+ch+'"'+eticheta+'>'+
+             (sterge?ICO_STERGE:ch)+'</button>';
     }).join('')+'</div>'
   ).join('');
   // pad-ul rămâne deschis: completezi tot cuvântul fără să-l redeschizi de fiecare dată
