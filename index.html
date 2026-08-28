@@ -22,6 +22,9 @@
   }
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   html,body{height:100%;}
+  /* oprește zoom-ul din dublu-tap, care se declanșa când tastai repede,
+     dar PĂSTREAZĂ zoom-ul cu două degete (contează la 35–64 de ani) */
+  body{touch-action:manipulation;}
   body{
     font-family:'Baloo 2','Trebuchet MS',sans-serif;
     background:radial-gradient(circle at 20% 10%,#e3f3e8 0%,transparent 55%),
@@ -130,6 +133,36 @@
   .letterpad .lp-key:active{background:var(--orange);color:#fff;transform:scale(.92);}
   .letterpad .lp-key.diac{background:#fbf2dc;border-color:#ecd9a8;color:#b8860b;}
   .letterpad .lp-key.del{background:#f6e2e0;border-color:#e9bdb9;color:var(--red);max-width:58px;flex:1.4;font-size:16px;}
+  /* Cu tastatura deschisă, cuvintele lungi (6 rânduri) ajungeau sub ea.
+     Cât e deschisă: conținutul urcă în sus, butoarele dispar (oricum sunt
+     acoperite), iar pagina primește loc dedesubt ca să poată fi derulată. */
+  body.pad-open .play-area{justify-content:flex-start;padding-top:4px;}
+  body.pad-open .actions{display:none;}
+  body.pad-open .app{padding-bottom:var(--padh,320px);}
+  /* bara cu nivelul, cronometrul și stelele nu ajută cât timp introduci litere,
+     iar pe ecrane mici cei ~46px fac diferența dintre a vedea tot cuvântul și a nu-l vedea */
+  body.pad-open .levelbar{display:none;}
+  body.pad-open .clue{font-size:15px;padding:7px 12px;margin-bottom:2px;}
+  body.pad-open .lvltag{margin-bottom:3px;}
+  /* Pe telefoanele foarte scunde (320×568 și similare) nici tastatura strânsă
+     nu lasă loc pentru șapte rânduri. Cât timp tastezi, antetul și tab-urile
+     nu-ți folosesc la nimic — le ascundem, și cuvântul întreg încape.
+     La „Coloana ascunsă” a vedea toate rândurile e chiar condiția ca jocul
+     să poată fi rezolvat, deci merită. */
+  @media (max-height:640px){
+    body.pad-open header,
+    body.pad-open nav{display:none;}
+    body.pad-open .card{margin-top:4px;}
+  }
+  /* pe telefoanele scunde tastatura mânca 40% din ecran; o strângem */
+  @media (max-height:730px){
+    .letterpad{padding:7px 8px calc(8px + env(safe-area-inset-bottom));}
+    .letterpad .lp-key{aspect-ratio:1/0.92;font-size:16px;}
+    .letterpad .lp-row{margin-bottom:4px;gap:3px;}
+    .lp-head{margin-bottom:5px;}
+    .lp-head .lp-title{font-size:10.5px;}
+    .lp-head .lp-close{width:26px;height:26px;font-size:13px;}
+  }
 
   /* WORD SEARCH */
   .grid{display:grid;gap:4px;background:#fff;padding:8px;border-radius:14px;margin:10px auto;width:max-content;
@@ -1261,8 +1294,53 @@ let lpOnPick=null;
   // pad-ul rămâne deschis: completezi tot cuvântul fără să-l redeschizi de fiecare dată
   wrap.querySelectorAll('.lp-key').forEach(b=>b.onclick=()=>{ if(lpOnPick)lpOnPick(b.dataset.ch); });
 })();
-function openLetterpad(onPick){ lpOnPick=onPick; letterpadBg.classList.add('show'); letterpad.classList.add('show'); }
-function closeLetterpad(){ letterpad.classList.remove('show'); letterpadBg.classList.remove('show'); lpOnPick=null; }
+function openLetterpad(onPick){
+  lpOnPick=onPick; letterpadBg.classList.add('show'); letterpad.classList.add('show');
+  document.body.classList.add('pad-open');
+  // înălțimea reală a tastaturii, măsurată — nu ghicită: diferă de la telefon la telefon
+  document.documentElement.style.setProperty('--padh',letterpad.offsetHeight+'px');
+  incapCasetele();          // sincron: nu depinde de momentul în care rulează cadrul
+  requestAnimationFrame(()=>{
+    incapCasetele();        // încă o dată, după ce s-a așezat layoutul
+    aducCasetaLaVedere();
+  });
+}
+function closeLetterpad(){
+  letterpad.classList.remove('show'); letterpadBg.classList.remove('show'); lpOnPick=null;
+  document.body.classList.remove('pad-open');
+  incapCasetele();          // casetele revin la mărimea normală
+}
+/* La „Coloana ascunsă” trebuie să vezi TOATE rândurile ca să deduci cuvântul —
+   derularea ar strica jocul. Deci, cât e tastatura deschisă, micșorăm casetele
+   exact cât să încapă tot cuvântul în spațiul rămas deasupra ei. */
+function incapCasetele(){
+  const pa=document.querySelector('.play-area'), rows=document.querySelector('.rows');
+  if(!pa||!rows)return;
+  const baza=parseFloat(pa.dataset.cw)||38;
+  if(!document.body.classList.contains('pad-open')){
+    pa.style.setProperty('--cw',baza+'px');
+    pa.style.overflowY='';
+    return;
+  }
+  const n=rows.children.length, gap=7;
+  const sus=rows.getBoundingClientRect().top;
+  const limitaPad=innerHeight-letterpad.offsetHeight;
+  const disponibil=limitaPad-sus-8;
+  const potrivit=Math.floor((disponibil-(n-1)*gap)/n);
+  // sub 26px literele devin greu de citit; atunci lăsăm derularea ca plasă de siguranță
+  const nou=Math.max(26,Math.min(baza,potrivit));
+  pa.style.setProperty('--cw',nou+'px');
+  pa.style.overflowY = potrivit<26 ? 'auto' : '';
+}
+/* aduce caseta activă deasupra tastaturii, dacă totuși a rămas sub ea */
+function aducCasetaLaVedere(){
+  if(!document.body.classList.contains('pad-open'))return;
+  const c=document.querySelector('.cell.miss.active');
+  if(!c)return;
+  const b=c.getBoundingClientRect();
+  const limita=innerHeight-letterpad.offsetHeight;
+  if(b.bottom>limita-6||b.top<60)c.scrollIntoView({block:'center',behavior:'smooth'});
+}
 letterpadBg.onclick=closeLetterpad;
 document.getElementById('lpClose').onclick=closeLetterpad;
 
@@ -1562,7 +1640,7 @@ function renderCol(p0,tag){
     const letters=r.split('').map(ch=>'<div class="cell">'+ch+'</div>').join('');
     return '<div class="row"><button class="cell miss" data-i="'+ri+'"></button>'+letters+'</div>';
   }).join('');
-  view.innerHTML='<div class="card"><div class="play-area" style="--cw:'+cw+'px">'+
+  view.innerHTML='<div class="card"><div class="play-area" data-cw="'+cw+'" style="--cw:'+cw+'px">'+
     lvlHeader(p.clue,tag)+
     '<div class="rows">'+rowsHtml+'</div>'+
     '<div class="result" id="res"></div></div>'+
@@ -1578,6 +1656,7 @@ function renderCol(p0,tag){
   function setActive(k){
     activeIdx=k;
     missCells.forEach((c,i)=>c.classList.toggle('active',i===k&&!locked[i]));
+    aducCasetaLaVedere();   // la cuvinte lungi, rândul următor poate fi sub tastatură
   }
   function nextEmpty(from){
     for(let i=from+1;i<chosen.length;i++)if(!chosen[i]&&!locked[i])return i;
