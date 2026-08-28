@@ -1,0 +1,20 @@
+{
+  "name": "Aceasta este România · Jocuri cu cuvinte",
+  "short_name": "Jocuri RO",
+  "description": "Trei jocuri cu cuvinte românești și o enigmă nouă în fiecare zi.",
+  "lang": "ro",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f7f0dd",
+  "theme_color": "#f7f0dd",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
