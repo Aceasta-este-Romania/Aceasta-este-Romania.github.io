@@ -94,6 +94,14 @@
   .play-area{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%;min-height:0;}
   .lvltag{text-align:center;font-weight:800;font-size:12px;letter-spacing:1.5px;color:var(--gold);
     text-transform:uppercase;margin-bottom:6px;}
+  .lvltag.special{color:#a8390f;font-size:13px;}
+  .lvltag .stea{color:var(--orange);letter-spacing:0;}
+  .special-sub{text-align:center;font-size:11.5px;color:#a8390f;font-weight:700;
+    margin:-3px 0 7px;letter-spacing:.3px;}
+  .pin.special{box-shadow:0 0 0 3px var(--orange),0 5px 0 rgba(0,0,0,.18),0 7px 12px rgba(0,0,0,.22);}
+  .pin.special.mare{box-shadow:0 0 0 4px var(--red),0 5px 0 rgba(0,0,0,.18),0 7px 12px rgba(0,0,0,.22);}
+  .pin.current.special{box-shadow:0 0 0 6px rgba(245,166,35,.35),0 0 0 3px var(--orange),
+    0 6px 0 #c9740f,0 10px 16px rgba(245,144,30,.5);}
   /* definiția e informația centrală a nivelului, nu un text auxiliar */
   .clue{text-align:center;font-family:'Lora',serif;font-size:16px;line-height:1.35;color:#1f3a2a;
     background:rgba(255,255,255,.62);border-radius:14px;padding:10px 14px;margin-bottom:4px;
@@ -440,7 +448,7 @@
 /* ============================================================
    1. LEXICON  (generat de tools/build_lexicon.py)
    ============================================================ */
-/* generat de tools/build_lexicon.py — nu edita direct */
+/* generat de tools/build_lexicon.py - nu edita direct */
 const LEXICON=[
 ["CASĂ","Clădirea în care locuiești"],
 ["APĂ","Lichidul pe care îl bei zilnic"],
@@ -806,6 +814,16 @@ const LEXICON=[
 
 const FILLER=["ACT", "AER", "ALTAR", "ALUN", "AMURG", "APĂ", "ARAMĂ", "ARC", "ARICI", "ARIN", "ARIPĂ", "ARMĂ", "AUR", "AȚĂ", "BAL", "BANI", "BAR", "BARZĂ", "BEC", "BILĂ", "BLOC", "BOB", "BOU", "BRAD", "BRAZI", "BRÂU", "BUTOI", "BUZĂ", "CAL", "CAP", "CARTE", "CASĂ", "CEAS", "CER", "COD", "COIF", "CORB", "COȘ", "CRIN", "CUB", "CUC", "CUI", "DALTĂ", "DAR", "DEAL", "DEGET", "DINTE", "DOINĂ", "DOM", "DOP", "DOR", "DRUM", "DUD", "DUH", "DUNĂ", "ECOU", "ECRAN", "ELAN", "ELEV", "ELF", "EMIR", "EPOCĂ", "EROU", "ETAJ", "EXIL", "FAN", "FAR", "FATĂ", "FIER", "FIR", "FLOARE", "FOC", "FRATE", "FRICĂ", "FUM", "FURCĂ", "FÂN", "GALBEN", "GARD", "GAZ", "GER", "GHIOC", "GLAS", "GOL", "GRUP", "GRÂU", "GURĂ", "GÂND", "GÂSCĂ", "HAINĂ", "HAN", "HAOS", "HAR", "HARTĂ", "HAT", "HOL", "HOP", "HORN", "HORĂ", "HRANĂ", "HULUB", "IAR", "IARBĂ", "IAZ", "ICOANĂ", "ICRE", "IEPURE", "IGLU", "IMN", "INEL", "INIMĂ", "IUTE", "IZVOR", "JAF", "JALE", "JAR", "JILȚ", "JIR", "JOC", "JOS", "JUDEȚ", "JUNE", "JUR", "LAC", "LADĂ", "LAN", "LAPTE", "LARMĂ", "LEMN", "LEU", "LIMBĂ", "LIN", "LUNĂ", "LUP", "LUT", "MAC", "MARE", "MASĂ", "MELC", "MIE", "MIEL", "MIERE", "MOARĂ", "MOȘ", "MUNTE", "MÂNĂ", "MĂR", "NAI", "NAS", "NEA", "NISIP", "NOAPTE", "NOR", "NUC", "NUFĂR", "NUME", "NUNTĂ", "NĂLUCĂ", "OAIE", "OBRAZ", "OCHI", "OCOL", "ODAIE", "OGOR", "OLAR", "OMĂT", "OPINCĂ", "ORAȘ", "ORĂ", "OSPĂȚ", "OȚEL", "PACE", "PANĂ", "PAR", "PIATRĂ", "PIX", "PLOP", "PLUG", "POD", "POM", "PORC", "PUI", "PĂR", "RAC", "RAI", "RAMĂ", "RAZĂ", "REN", "ROCĂ", "ROI", "ROUĂ", "RUG", "RÂND", "RÂS", "RÂU", "SAC", "SARE", "SAT", "SCARĂ", "SEC", "SEMN", "SOARE", "SOBĂ", "SOL", "SOMN", "STEA", "SUC", "TAC", "TAINĂ", "TALPĂ", "TEI", "TIMP", "TIR", "TOBĂ", "TON", "TREN", "TUB", "TUNET", "TURN", "UITARE", "ULEI", "ULIȚĂ", "UMĂR", "UNDĂ", "UNGHI", "UNT", "URMĂ", "URNĂ", "URS", "UȘĂ", "VACĂ", "VAL", "VAR", "VARZĂ", "VAS", "VATRĂ", "VID", "VIN", "VIS", "VOCE", "VULPE", "VÂNT", "ZAR", "ZARE", "ZBOR", "ZEBRĂ", "ZESTRE", "ZEU", "ZIAR", "ZID", "ZOR", "ZORI", "ZÂNĂ", "ZĂPADĂ", "ȘAH", "ȘAL", "ȘANSĂ", "ȘAPTE", "ȘARPE", "ȘCOALĂ", "ȘEF", "ȘIR", "ȘOIM", "ȘOSEA", "ȘURUB", "ȘURĂ", "ȚAP", "ȚARC", "ȚARĂ", "ȚEAVĂ", "ȚEL", "ȚESUT", "ȚIGLĂ", "ȚINTĂ", "ȚIPAR", "ȚIPĂT", "ȚĂRAN", "ȚĂRM"];
 
+/* Ordinea de joc: nivelul N foloseste LEXICON[ORDINE.joc[N-1]].
+   Lista de mai sus e ordinea DIFICULTATII si e scrisa pe teme;
+   daca s-ar juca in ordinea aceea, ar iesi unsprezece meserii la rand.
+   Aici temele sunt amestecate, iar la fiecare al 5-lea nivel urca dificultatea. */
+const ORDINE={
+  search:[0, 40, 59, 78, 200, 80, 57, 99, 120, 320, 139, 118, 158, 97, 280, 160, 137, 179, 116, 339, 95, 156, 198, 135, 358, 154, 177, 114, 133, 337, 152, 196, 131, 175, 299, 194, 219, 173, 238, 356, 192, 150, 171, 217, 335, 236, 129, 190, 148, 354, 215, 169, 234, 188, 333, 127, 167, 213, 186, 352, 165, 232, 184, 211, 331, 163, 230, 182, 209, 350, 228, 240, 207, 259, 329, 226, 161, 205, 278, 348, 257, 180, 224, 199, 327, 276, 203, 255, 222, 346, 178, 201, 274, 220, 325, 239, 253, 197, 218, 344, 237, 272, 216, 251, 323, 270, 318, 235, 249, 342, 268, 214, 247, 297, 321, 266, 233, 245, 212, 340, 316, 264, 295, 231, 359, 210, 243, 314, 262, 338, 229, 241, 208, 260, 357, 279, 293, 258, 277, 336, 256, 312, 275, 291, 355, 310, 227, 254, 289, 334, 308, 273, 287, 206, 353, 306, 252, 285, 271, 332, 250, 304, 351, 269, 330, 248, 283, 267, 302, 349, 246, 281, 265, 300, 328, 296, 347, 244, 298, 326, 315, 263, 319, 345, 324, 343, 242, 317, 261, 322, 341, 294, 313, 292, 311, 290, 309, 288, 307, 286, 305, 284, 303, 282, 301, 225, 204, 223, 202, 221, 176, 195, 174, 193, 172, 191, 170, 189, 168, 187, 166, 185, 164, 183, 162, 181, 146, 125, 144, 123, 142, 121, 140, 159, 138, 157, 136, 155, 134, 153, 132, 151, 130, 149, 128, 147, 126, 145, 124, 143, 122, 141, 93, 112, 91, 110, 89, 108, 87, 106, 85, 104, 83, 102, 81, 100, 119, 98, 117, 96, 115, 94, 113, 92, 111, 90, 109, 88, 107, 86, 105, 84, 103, 82, 101, 76, 55, 74, 53, 72, 51, 70, 49, 68, 47, 66, 45, 64, 43, 62, 41, 60, 79, 58, 77, 56, 75, 54, 73, 52, 71, 50, 69, 48, 67, 46, 65, 44, 63, 42, 61, 19, 38, 17, 36, 15, 34, 13, 32, 11, 30, 9, 28, 7, 26, 5, 24, 3, 22, 1, 20, 39, 18, 37, 16, 35, 14, 33, 12, 31, 10, 29, 8, 27, 6, 25, 4, 23, 2, 21],
+  ana:[13, 53, 72, 51, 213, 93, 70, 112, 133, 333, 152, 91, 131, 110, 293, 173, 150, 192, 89, 352, 108, 129, 171, 148, 331, 127, 190, 87, 146, 350, 125, 169, 144, 188, 312, 167, 232, 186, 211, 329, 165, 123, 184, 230, 348, 209, 142, 163, 121, 327, 228, 182, 207, 161, 346, 140, 180, 226, 199, 325, 178, 205, 174, 224, 344, 176, 203, 193, 222, 323, 201, 253, 220, 272, 342, 239, 197, 218, 251, 321, 270, 195, 237, 172, 340, 249, 216, 268, 235, 359, 191, 214, 247, 233, 338, 212, 266, 170, 231, 357, 210, 245, 229, 264, 336, 243, 291, 208, 262, 355, 241, 227, 260, 310, 334, 279, 206, 258, 225, 353, 289, 277, 308, 204, 332, 223, 256, 287, 275, 351, 202, 254, 221, 273, 330, 252, 306, 271, 250, 349, 269, 285, 248, 304, 328, 283, 200, 267, 302, 347, 281, 246, 300, 219, 326, 298, 265, 319, 244, 345, 263, 317, 343, 242, 324, 261, 296, 240, 315, 339, 259, 294, 278, 313, 341, 292, 320, 257, 311, 322, 290, 276, 309, 358, 337, 356, 255, 288, 274, 335, 354, 307, 286, 305, 284, 303, 282, 301, 280, 299, 318, 297, 316, 295, 314, 238, 217, 236, 215, 234, 189, 168, 187, 166, 185, 164, 183, 162, 181, 160, 179, 198, 177, 196, 175, 194, 159, 138, 157, 136, 155, 134, 153, 132, 151, 130, 149, 128, 147, 126, 145, 124, 143, 122, 141, 120, 139, 158, 137, 156, 135, 154, 106, 85, 104, 83, 102, 81, 100, 119, 98, 117, 96, 115, 94, 113, 92, 111, 90, 109, 88, 107, 86, 105, 84, 103, 82, 101, 80, 99, 118, 97, 116, 95, 114, 49, 68, 47, 66, 45, 64, 43, 62, 41, 60, 79, 58, 77, 56, 75, 54, 73, 52, 71, 50, 69, 48, 67, 46, 65, 44, 63, 42, 61, 40, 59, 78, 57, 76, 55, 74, 32, 11, 30, 9, 28, 7, 26, 5, 24, 3, 22, 1, 20, 39, 18, 37, 16, 35, 14, 33, 12, 31, 10, 29, 8, 27, 6, 25, 4, 23, 2, 21, 0, 19, 38, 17, 36, 15, 34],
+  col:[23, 63, 75, 54, 207, 95, 108, 128, 168, 347, 179, 146, 162, 88, 298, 174, 119, 155, 141, 325, 114, 169, 224, 180, 346, 131, 198, 147, 163, 324, 175, 219, 157, 192, 342, 209, 263, 170, 227, 322, 202, 149, 220, 276, 340, 250, 165, 193, 177, 321, 270, 215, 244, 183, 338, 205, 264, 318, 221, 359, 196, 277, 217, 251, 337, 271, 292, 186, 245, 357, 266, 310, 229, 282, 335, 255, 206, 272, 300, 353, 320, 246, 293, 223, 334, 311, 268, 284, 230, 352, 257, 307, 333, 274, 350, 248, 278, 242, 295, 331, 315, 348, 269, 285, 330, 308, 279, 296, 317, 290, 309, 281, 197, 218, 190, 158, 171, 152, 166, 178, 160, 172, 154, 121, 142, 115, 136, 110, 122, 144, 117, 137, 111, 127, 145, 118, 139, 112, 102, 81, 96, 109, 90, 103, 83, 97, 78, 92, 104, 84, 99, 79, 93, 105, 86, 100, 80, 65, 48, 64, 77, 57, 72, 49, 71, 44, 61, 73, 52, 68, 46, 62, 74, 53, 69, 47, 35, 17, 41, 8, 25, 42, 19, 36, 9, 27, 3, 20, 37, 13, 33, 6, 21, 39, 14, 34, 7]
+};
+
 /* Coloana ascunsă are nevoie de chei ale căror litere au toate cuvinte
    de umplutură care încep cu ele. În română aproape nu există cuvinte
    care încep cu Ă/Â/Î, așa că filtrăm cheile automat — lista nu mai
@@ -821,9 +839,15 @@ const COL_LEXICON=LEXICON.filter(([w])=>[...w].every(ch=>LITERE_CHEIE.has(ch)));
 const FILL_COMMON="ABCDEFGHILMNOPRSTUVZ".split('');
 const FILL_DIAC="ĂÂÎȘȚ".split('');
 
-function wordAt(level,offset){ return LEXICON[((level-1)+(offset||0))%LEXICON.length]; }
-const OFFSET_SEARCH=0, OFFSET_ANA=Math.floor(LEXICON.length/3);
-function colWordAt(level){ return COL_LEXICON[(level-1)%COL_LEXICON.length]; }
+/* Nivelul N NU ia cuvântul N din listă. Lista e ordinea dificultății și e scrisă
+   pe teme, așa că jucată direct ar da unsprezece meserii la rând. ORDINE (generată
+   și verificată de tools/build_lexicon.py) amestecă temele și urcă dificultatea
+   la fiecare al 5-lea nivel. */
+function wordAt(level,joc){ const o=ORDINE[joc]; return LEXICON[o[(level-1)%o.length]]; }
+function colWordAt(level){ return wordAt(level,'col'); }
+/* la fiecare al 5-lea nivel cuvântul e vizibil mai greu; al 10-lea urcă și mai mult */
+function esteSpecial(level){ return level%5===0; }
+function esteSpecialMare(level){ return level%10===0; }
 
 /* ============================================================
    2. RANDOM CU SEED  (determinist -> aceleași niveluri pentru toți)
@@ -841,7 +865,7 @@ function shuffleSeeded(rng,str){let a=str.split('');for(let i=a.length-1;i>0;i--
    3. GENERATOARE
    ============================================================ */
 function genAna(level){
-  const [w,def]=wordAt(level,OFFSET_ANA);
+  const [w,def]=wordAt(level,'ana');
   const rng=mulberry32(seedFor('ana',level));
   let s,t=0; do{s=shuffleSeeded(rng,w);t++;}while(s===w&&t<40);
   return {scrambled:s,answer:w,clue:def};
@@ -864,7 +888,7 @@ function genCol(level){
 }
 
 function genSearch(level){
-  const [W,def]=wordAt(level,OFFSET_SEARCH);
+  const [W,def]=wordAt(level,'search');
   const L=W.length;
   const size=Math.max(6,Math.min(9,L+2));
   const rng=mulberry32(seedFor('search',level));
@@ -1588,8 +1612,10 @@ function renderMap(){
     let cls='locked',inner='<span class="lvlnum">'+level+'</span>';
     if(level<unlocked){cls='done';const st=progress[g].stars[level]||0;inner=level+(st?'<span class="stars">'+'⭐'.repeat(st)+'</span>':'');}
     else if(level===unlocked){cls='current';inner=level;}
+    // nivelurile speciale se văd de departe pe traseu: altfel surpriza nu se anunță
+    if(esteSpecial(level))cls+=esteSpecialMare(level)?' special mare':' special';
     pins+='<button class="pin '+cls+'" style="left:'+x+'%;top:'+y+'px" data-level="'+level+'"'+
-          (cls==='locked'?' disabled':'')+'>'+inner+'</button>';
+          (cls.includes('locked')?' disabled':'')+'>'+inner+'</button>';
   }
 
   const parcurse=Math.max(0,Math.min(unlocked-start,size));
@@ -1615,7 +1641,17 @@ function renderMap(){
 
 /* ---------- HELPERS DE NIVEL ---------- */
 function lvlHeader(clue,tag){
-  return '<div class="lvltag">'+(tag||('Nivel '+playLevel[current]))+'</div>'+
+  const L=playLevel[current];
+  const special = !tag && esteSpecial(L);
+  const eticheta = tag || ('Nivel '+L);
+  return '<div class="lvltag'+(special?' special':'')+'">'+
+           (special?'<span class="stea">'+(esteSpecialMare(L)?'★★':'★')+'</span> ':'')+
+           eticheta+
+           (special?' <span class="stea">'+(esteSpecialMare(L)?'★★':'★')+'</span>':'')+
+         '</div>'+
+         (special?'<div class="special-sub">'+
+            (esteSpecialMare(L)?'Nivel special mare — cuvânt rar':'Nivel special — cuvânt mai greu')+
+          '</div>':'')+
          (clue?'<div class="clue">'+clue+'</div>':'');
 }
 let nivelInCurs=null;
