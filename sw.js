@@ -1,5 +1,5 @@
 /* generat de tools/build.py — nu edita direct */
-const CACHE = "aer-57de9c1bc3";
+const CACHE = "aer-87347e0667";
 const FISIERE = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", e => {
