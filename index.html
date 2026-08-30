@@ -1680,13 +1680,9 @@ function lvlHeader(clue,tag){
   /* La Coloană, nivelurile ★ au rânduri de 7–9 litere, ca jocurile de pe Facebook.
      Definiția rămâne afișată peste tot: fără ea, un cuvânt lung necunoscut e un zid,
      nu o provocare. Greutatea vine din rânduri, nu din lipsa indiciului. */
-  const randuriLungi = special && current==='col';
   const eticheta = tag || ('Nivel '+L);
-  let sub='';
-  if(special){
-    sub = randuriLungi ? 'Nivel special — cuvinte lungi'
-        : (esteSpecialMare(L)?'Nivel special mare — cuvânt rar':'Nivel special — cuvânt mai greu');
-  }
+  // doar „Nivel special” — jucătorul n-are de ce să afle cum e construit nivelul
+  const sub = special ? 'Nivel special' : '';
   return '<div class="lvltag'+(special?' special':'')+'">'+
            (special?'<span class="stea">'+(esteSpecialMare(L)?'★★':'★')+'</span> ':'')+
            eticheta+
