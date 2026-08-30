@@ -2205,8 +2205,25 @@ addEventListener('pagehide',()=>{
 
 /* PWA: dacă fișierele auxiliare sunt alături, jocul se poate adăuga pe ecranul
    principal și scapă de browserul intern al Facebook. Lipsa lor nu strică nimic. */
+const CACHE_NAME="aer-808e151dd3";
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
-  addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+  addEventListener('load',()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+    /* Plasă de siguranță: verificăm din pagină că fișierele chiar au ajuns în cache
+       și le punem noi dacă lipsesc. Instalarea service worker-ului poate eșua în
+       tăcere, iar fără asta jocul n-ar porni offline la prima vizită. */
+    navigator.serviceWorker.ready.then(async()=>{
+      try{
+        if(typeof CACHE_NAME==='undefined')return;
+        const c=await caches.open(CACHE_NAME);
+        for(const f of ['./','./index.html','./manifest.webmanifest','./icon.svg']){
+          if(await c.match(f))continue;
+          const r=await fetch(f,{cache:'no-store'});
+          if(r.ok)await c.put(f,r);
+        }
+      }catch(e){}
+    }).catch(()=>{});
+  });
 }
 
 updateHintBadge();

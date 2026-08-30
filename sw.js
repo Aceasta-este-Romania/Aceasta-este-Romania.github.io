@@ -1,10 +1,21 @@
 /* generat de tools/build.py — nu edita direct */
-const CACHE = "aer-b3a6390cca";
+const CACHE = "aer-808e151dd3";
 const FISIERE = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
+// Fișier cu fișier, nu addAll: dacă unul singur pică, addAll abandonează tot
+// și cache-ul rămâne gol — exact ce s-a întâmplat la prima punere online.
+// skipWaiting vine LA FINAL, ca activarea să nu întrerupă salvarea.
 self.addEventListener("install", e => {
-  self.skipWaiting();
-  e.waitUntil(caches.open(CACHE).then(c => c.addAll(FISIERE)).catch(() => {}));
+  e.waitUntil((async () => {
+    const c = await caches.open(CACHE);
+    for (const f of FISIERE) {
+      try {
+        const r = await fetch(f, { cache: "reload" });
+        if (r.ok) await c.put(f, r);
+      } catch (err) { /* un fișier lipsă nu trebuie să oprească restul */ }
+    }
+    await self.skipWaiting();
+  })());
 });
 self.addEventListener("activate", e => {
   e.waitUntil(caches.keys().then(k =>
