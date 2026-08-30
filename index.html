@@ -159,11 +159,13 @@
      nu-ți folosesc la nimic — le ascundem, și cuvântul întreg încape.
      La „Coloana ascunsă” a vedea toate rândurile e chiar condiția ca jocul
      să poată fi rezolvat, deci merită. */
-  @media (max-height:640px){
-    body.pad-open header,
-    body.pad-open nav{display:none;}
-    body.pad-open .card{margin-top:4px;}
-  }
+  /* Antetul și tab-urile se ascund doar dacă altfel cuvântul n-ar încăpea deasupra
+     tastaturii. Clasa o pune JS după ce măsoară, nu un prag de înălțime ghicit:
+     la 375×667 cu definiție și șase rânduri lungi, un prag de 640px rata cazul. */
+  body.pad-open.stramt header,
+  body.pad-open.stramt nav{display:none;}
+  body.pad-open.stramt .card{margin-top:4px;}
+  body.pad-open.stramt .clue{font-size:14px;padding:5px 10px;}
   /* pe telefoanele scunde tastatura mânca 40% din ecran; o strângem */
   @media (max-height:730px){
     .letterpad{padding:7px 8px calc(8px + env(safe-area-inset-bottom));--kh:40px;}
@@ -1369,21 +1371,31 @@ function incapCasetele(){
   const pa=document.querySelector('.play-area'), rows=document.querySelector('.rows');
   if(!pa||!rows)return;
   const baza=parseFloat(pa.dataset.cw)||38;
+  const minim=parseFloat(pa.dataset.min)||26;
   if(!document.body.classList.contains('pad-open')){
     pa.style.setProperty('--cw',baza+'px');
     pa.style.overflowY='';
+    document.body.classList.remove('stramt');
     return;
   }
   const n=rows.children.length;
   const gap=parseFloat(getComputedStyle(rows).rowGap)||7;
-  const sus=rows.getBoundingClientRect().top;
-  const limitaPad=innerHeight-letterpad.offsetHeight;
-  const disponibil=limitaPad-sus-8;
-  const potrivit=Math.floor((disponibil-(n-1)*gap)/n);
-  // sub 26px literele devin greu de citit; atunci lăsăm derularea ca plasă de siguranță
-  const nou=Math.max(26,Math.min(baza,potrivit));
+  const catIncape=()=>{
+    const sus=rows.getBoundingClientRect().top;
+    const limitaPad=innerHeight-letterpad.offsetHeight;
+    return Math.floor((limitaPad-sus-8-(n-1)*gap)/n);
+  };
+  document.body.classList.remove('stramt');
+  let potrivit=catIncape();
+  if(potrivit<minim){
+    // nu încape nici la mărimea minimă: strângem ecranul (antet, tab-uri, definiție
+    // mai mică) și măsurăm din nou. Antetul nu ajută cu nimic cât timp tastezi.
+    document.body.classList.add('stramt');
+    potrivit=catIncape();
+  }
+  const nou=Math.max(minim,Math.min(baza,potrivit));
   pa.style.setProperty('--cw',nou+'px');
-  pa.style.overflowY = potrivit<26 ? 'auto' : '';
+  pa.style.overflowY = potrivit<minim ? 'auto' : '';
 }
 /* aduce caseta activă deasupra tastaturii, dacă totuși a rămas sub ea */
 function aducCasetaLaVedere(){
@@ -1665,14 +1677,14 @@ function renderMap(){
 function lvlHeader(clue,tag){
   const L=playLevel[current];
   const special = !tag && esteSpecial(L);
-  /* La Coloană, nivelurile ★ sunt ca jocurile de pe Facebook: rânduri de 7–9 litere
-     și NICIO definiție — cheia se deduce doar completând rândurile. Scriem explicit
-     „fără definiție”, altfel lipsa ei arată a defecțiune, nu a intenție. */
-  const faraDefinitie = special && current==='col';
+  /* La Coloană, nivelurile ★ au rânduri de 7–9 litere, ca jocurile de pe Facebook.
+     Definiția rămâne afișată peste tot: fără ea, un cuvânt lung necunoscut e un zid,
+     nu o provocare. Greutatea vine din rânduri, nu din lipsa indiciului. */
+  const randuriLungi = special && current==='col';
   const eticheta = tag || ('Nivel '+L);
   let sub='';
   if(special){
-    sub = faraDefinitie ? 'Nivel special — fără definiție'
+    sub = randuriLungi ? 'Nivel special — cuvinte lungi'
         : (esteSpecialMare(L)?'Nivel special mare — cuvânt rar':'Nivel special — cuvânt mai greu');
   }
   return '<div class="lvltag'+(special?' special':'')+'">'+
@@ -1681,7 +1693,7 @@ function lvlHeader(clue,tag){
            (special?' <span class="stea">'+(esteSpecialMare(L)?'★★':'★')+'</span>':'')+
          '</div>'+
          (sub?'<div class="special-sub">'+sub+'</div>':'')+
-         ((clue&&!faraDefinitie)?'<div class="clue">'+clue+'</div>':'');
+         (clue?'<div class="clue">'+clue+'</div>':'');
 }
 let nivelInCurs=null;
 function resetLevelState(){
@@ -1722,7 +1734,7 @@ function renderCol(p0,tag){
     const letters=r.split('').map(ch=>'<div class="cell">'+ch+'</div>').join('');
     return '<div class="row"><button class="cell miss" data-i="'+ri+'"></button>'+letters+'</div>';
   }).join('');
-  view.innerHTML='<div class="card"><div class="play-area" data-cw="'+cw+'" style="--cw:'+cw+'px;--gap:'+gap+'px">'+
+  view.innerHTML='<div class="card"><div class="play-area" data-cw="'+cw+'" data-min="'+minCw+'" style="--cw:'+cw+'px;--gap:'+gap+'px">'+
     lvlHeader(p.clue,tag)+
     '<div class="rows">'+rowsHtml+'</div>'+
     '<div class="result" id="res"></div></div>'+
