@@ -1,5 +1,5 @@
 /* generat de tools/build.py — nu edita direct */
-const CACHE = "aer-808e151dd3";
+const CACHE = "aer-c3b3fe03af";
 const FISIERE = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 // Fișier cu fișier, nu addAll: dacă unul singur pică, addAll abandonează tot

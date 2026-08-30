@@ -2205,16 +2205,17 @@ addEventListener('pagehide',()=>{
 
 /* PWA: dacă fișierele auxiliare sunt alături, jocul se poate adăuga pe ecranul
    principal și scapă de browserul intern al Facebook. Lipsa lor nu strică nimic. */
-const CACHE_NAME="aer-808e151dd3";
+const CACHE_NAME="aer-c3b3fe03af";
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load',()=>{
     navigator.serviceWorker.register('sw.js').catch(()=>{});
-    /* Plasă de siguranță: verificăm din pagină că fișierele chiar au ajuns în cache
-       și le punem noi dacă lipsesc. Instalarea service worker-ului poate eșua în
-       tăcere, iar fără asta jocul n-ar porni offline la prima vizită. */
-    navigator.serviceWorker.ready.then(async()=>{
+    /* Plasă de siguranță: umplem cache-ul direct din pagină, fără să așteptăm
+       service worker-ul. ⚠️ `serviceWorker.ready` NU se rezolvă la prima vizită —
+       pagina încă nu e controlată — deci orice am lega de el nu rulează exact
+       atunci când contează. API-ul `caches` e disponibil paginii oricum. */
+    (async()=>{
       try{
-        if(typeof CACHE_NAME==='undefined')return;
+        if(typeof CACHE_NAME==='undefined'||!('caches' in window))return;
         const c=await caches.open(CACHE_NAME);
         for(const f of ['./','./index.html','./manifest.webmanifest','./icon.svg']){
           if(await c.match(f))continue;
@@ -2222,7 +2223,7 @@ if('serviceWorker' in navigator && location.protocol.startsWith('http')){
           if(r.ok)await c.put(f,r);
         }
       }catch(e){}
-    }).catch(()=>{});
+    })();
   });
 }
 
