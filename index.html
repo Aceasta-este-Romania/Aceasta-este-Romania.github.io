@@ -340,24 +340,70 @@
      fără să termine nivelul 1 — și NU fiindcă era greu (doar 3 sesiuni au greșit
      vreodată acolo), ci fiindcă nu se vedea ce au de făcut. Se explică în imagine,
      nu în text: cine trebuie să citească un paragraf ca să înceapă, nu începe. */
-  .tutor-demo{display:flex;flex-direction:column;gap:5px;align-items:center;margin:0 0 14px;}
-  .tutor-row{display:flex;gap:5px;}
-  .tutor-c{width:clamp(28px,8.4vw,36px);height:clamp(28px,8.4vw,36px);border-radius:9px;background:#fff;
-    display:flex;align-items:center;justify-content:center;font-weight:800;
-    font-size:clamp(14px,4.4vw,18px);color:var(--ink);}
-  .tutor-c.gol{background:var(--orange);color:#fff;box-shadow:0 3px 9px rgba(245,166,35,.45);}
-  .tutor-c.gol span{animation:tutorLit 4.2s infinite;}
-  .tutor-row:nth-of-type(2) .tutor-c.gol span{animation-delay:.55s;}
-  .tutor-row:nth-of-type(3) .tutor-c.gol span{animation-delay:1.1s;}
-  @keyframes tutorLit{0%,6%{opacity:0;transform:translateY(-7px);}
-    16%,90%{opacity:1;transform:none;}100%{opacity:0;transform:translateY(-7px);}}
-  .tutor-jos{display:flex;align-items:center;gap:8px;margin-top:7px;font-weight:800;
-    font-size:17px;letter-spacing:3px;color:var(--orange);animation:tutorCheie 4.2s infinite;}
-  .tutor-jos .sag{font-size:14px;letter-spacing:0;}
-  @keyframes tutorCheie{0%,38%{opacity:0;}48%,90%{opacity:1;}100%{opacity:0;}}
-  /* Fără mișcare, demonstrația trebuie să rămână lizibilă — nu goală. */
+  /* Demonstrația arată GESTUL, nu doar rezultatul: o mână apasă pe pătratul
+     portocaliu, apoi pe literele de pe tastatură, iar literele apar la locul lor.
+     ⚠️ Prima variantă arăta doar literele apărând singure. Explica logica jocului,
+     dar nu și ce are omul de făcut — cine n-a mai jucat așa ceva rămânea tot fără
+     să știe unde să apese. Publicul e 64% peste 35 de ani; gestul trebuie văzut. */
+  /* ⚠️ Fereastra asta NU folosește blur în spate. Blurul (`backdrop-filter`) plus
+     animațiile din SVG dădeau, la compunerea imaginii, o fereastră semitransparentă
+     prin care se vedea jocul. Oricare dintre cele două scoasă, randarea e curată —
+     verificat în ambele sensuri. Blurul e decorativ, demonstrația e singurul ecran
+     pe care îl vede FIECARE om nou; nu merită niciun risc. Scapă și telefoanele
+     slabe de un efect scump exact în momentul primei impresii. */
+  #tutorModal{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(34,38,43,.62);}
+  .tutor-demo{margin:0 0 12px;}
+  .tutor-svg{width:100%;max-width:300px;height:auto;display:block;margin:0 auto;}
+  .t-cel{fill:#fff;}
+  .t-gol{fill:var(--orange);}
+  .t-tasta{fill:#eef3ef;stroke:#d5e0d8;stroke-width:1.5;}
+  .t-lit{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:19px;
+    fill:var(--ink);text-anchor:middle;dominant-baseline:central;}
+  .t-lit.pe-gol{fill:#fff;}
+  .t-cheie{font-family:'Baloo 2',sans-serif;font-weight:800;font-size:22px;
+    letter-spacing:3px;fill:var(--orange);text-anchor:middle;dominant-baseline:central;}
+  .t-fir{stroke:var(--orange);stroke-width:2.5;stroke-dasharray:4 4;stroke-linecap:round;}
+  .t-mana path{fill:#22262b;}
+  .t-und{fill:none;stroke:var(--orange);stroke-width:3;}
+
+  /* Nouă secunde: apasă caseta · apasă M · A · C · apare cuvântul.
+     ⚠️ Prima variantă apăsa caseta după o jumătate de secundă. Fereastra abia
+     apare (400ms + tranziția), deci exact gestul care trebuia văzut se consuma
+     înainte ca omul să apuce să se uite. Acum mâna intră lin și apasă abia la
+     1,35 secunde. Ritmul e ales pentru cineva de 60 de ani, nu pentru mine. */
+  .t-mana{animation:tManaDrum 9s infinite;}
+  @keyframes tManaDrum{
+    0%,6%   {transform:translate(87px,28px);opacity:0;}
+    12%,17% {transform:translate(87px,28px);opacity:1;}
+    26%,31% {transform:translate(87px,208px);opacity:1;}
+    41%,46% {transform:translate(171px,208px);opacity:1;}
+    56%,61% {transform:translate(255px,208px);opacity:1;}
+    66%,100%{transform:translate(255px,208px);opacity:0;}
+  }
+  /* Unda de atingere se face din `scale`, nu din `r`: animarea razei prin CSS
+     nu merge în toate browserele, iar `transform` merge peste tot. */
+  .t-und{animation:tUnda 9s infinite;transform-box:fill-box;transform-origin:center;}
+  @keyframes tUnda{
+    0%,14%{transform:scale(.1);opacity:0;}
+    15%   {transform:scale(.1);opacity:.85;}  20%{transform:scale(1);opacity:0;}
+    27%   {transform:scale(.1);opacity:.85;}  32%{transform:scale(1);opacity:0;}
+    42%   {transform:scale(.1);opacity:.85;}  47%{transform:scale(1);opacity:0;}
+    57%   {transform:scale(.1);opacity:.85;}  62%{transform:scale(1);opacity:0;}
+    100%  {transform:scale(.1);opacity:0;}
+  }
+  .t-scris{opacity:0;animation:tScris 9s infinite;}
+  .t-scris.a2{animation-name:tScris2;}
+  .t-scris.a3{animation-name:tScris3;}
+  @keyframes tScris  {0%,29%{opacity:0;}31%,94%{opacity:1;}100%{opacity:0;}}
+  @keyframes tScris2 {0%,44%{opacity:0;}46%,94%{opacity:1;}100%{opacity:0;}}
+  @keyframes tScris3 {0%,59%{opacity:0;}61%,94%{opacity:1;}100%{opacity:0;}}
+  .t-jos{opacity:0;animation:tJos 9s infinite;}
+  @keyframes tJos{0%,65%{opacity:0;}70%,94%{opacity:1;}100%{opacity:0;}}
+
+  /* Fără mișcare: se arată starea finală, nu un desen gol. */
   @media (prefers-reduced-motion:reduce){
-    .tutor-c.gol span,.tutor-jos{animation:none;opacity:1;transform:none;}
+    .t-mana,.t-und{display:none;}
+    .t-scris,.t-jos{animation:none;opacity:1;}
   }
 
   /* Cele trei jocuri, la alegere. Sub 6% dintre jucători găseau celelalte două. */
@@ -464,13 +510,47 @@
 <div class="modal-bg" id="tutorModal"><div class="modal">
   <div class="lab">Cum se joacă</div>
   <div class="tutor-demo">
-    <div class="tutor-row"><div class="tutor-c gol"><span>M</span></div><div class="tutor-c">A</div><div class="tutor-c">R</div><div class="tutor-c">E</div></div>
-    <div class="tutor-row"><div class="tutor-c gol"><span>A</span></div><div class="tutor-c">P</div><div class="tutor-c">O</div><div class="tutor-c">I</div></div>
-    <div class="tutor-row"><div class="tutor-c gol"><span>C</span></div><div class="tutor-c">A</div><div class="tutor-c">S</div><div class="tutor-c">Ă</div></div>
-    <div class="tutor-jos"><span class="sag">▼</span>MAC</div>
+  <svg class="tutor-svg" viewBox="0 0 300 262" role="img"
+       aria-label="Apeși pe pătratul portocaliu, apoi pe literă. Literele lipsă, citite de sus în jos, formează cuvântul.">
+    <rect class="t-gol" x="69"  y="10" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="111" y="10" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="153" y="10" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="195" y="10" width="36" height="36" rx="9"/>
+    <rect class="t-gol" x="69"  y="52" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="111" y="52" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="153" y="52" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="195" y="52" width="36" height="36" rx="9"/>
+    <rect class="t-gol" x="69"  y="94" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="111" y="94" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="153" y="94" width="36" height="36" rx="9"/>
+    <rect class="t-cel" x="195" y="94" width="36" height="36" rx="9"/>
+    <text class="t-lit" x="129" y="28">A</text><text class="t-lit" x="171" y="28">R</text><text class="t-lit" x="213" y="28">E</text>
+    <text class="t-lit" x="129" y="70">P</text><text class="t-lit" x="171" y="70">O</text><text class="t-lit" x="213" y="70">I</text>
+    <text class="t-lit" x="129" y="112">A</text><text class="t-lit" x="171" y="112">S</text><text class="t-lit" x="213" y="112">Ă</text>
+    <text class="t-lit pe-gol t-scris"    x="87" y="28">M</text>
+    <text class="t-lit pe-gol t-scris a2" x="87" y="70">A</text>
+    <text class="t-lit pe-gol t-scris a3" x="87" y="112">C</text>
+    <g class="t-jos">
+      <line class="t-fir" x1="87" y1="136" x2="87" y2="152"/>
+      <text class="t-cheie" x="87" y="170">MAC</text>
+    </g>
+    <rect class="t-tasta" x="27"  y="190" width="36" height="36" rx="8"/>
+    <rect class="t-tasta" x="69"  y="190" width="36" height="36" rx="8"/>
+    <rect class="t-tasta" x="111" y="190" width="36" height="36" rx="8"/>
+    <rect class="t-tasta" x="153" y="190" width="36" height="36" rx="8"/>
+    <rect class="t-tasta" x="195" y="190" width="36" height="36" rx="8"/>
+    <rect class="t-tasta" x="237" y="190" width="36" height="36" rx="8"/>
+    <text class="t-lit" x="45"  y="208">T</text><text class="t-lit" x="87"  y="208">M</text>
+    <text class="t-lit" x="129" y="208">E</text><text class="t-lit" x="171" y="208">A</text>
+    <text class="t-lit" x="213" y="208">S</text><text class="t-lit" x="255" y="208">C</text>
+    <g class="t-mana">
+      <circle class="t-und" cx="0" cy="0" r="19"/>
+      <g transform="scale(.78)"><path d="M0 0c-3.3 0-6 2.7-6 6v20.5l-4.2-4.2c-2.3-2.3-6.1-2.3-8.4 0s-2.3 6.1 0 8.4l12.4 12.4c2.6 2.6 6.1 4.1 9.8 4.1h9.6c7.1 0 12.8-5.7 12.8-12.8V20c0-3.3-2.7-6-6-6s-6 2.7-6 6v-2c0-3.3-2.7-6-6-6s-6 2.7-6 6V6c0-3.3-2.7-6-6-6z"/></g>
+    </g>
+  </svg>
   </div>
-  <div class="txt">Fiecărui rând îi lipsește <b>prima literă</b>.<br>
-    Citite de sus în jos, literele lipsă formează cuvântul cerut.</div>
+  <div class="txt">Apeși pe <b>pătratul portocaliu</b>, apoi pe literă.<br>
+    Literele lipsă, citite de sus în jos, formează cuvântul.</div>
   <button class="close" id="tutorClose">Hai să încercăm</button>
 </div></div>
 
@@ -1592,6 +1672,12 @@ const tutorModal=document.getElementById('tutorModal');
 function arataTutorial(){
   if(meta.tutorVazut||current!=='col'||screen!=='play'||dailyGame)return false;
   meta.tutorVazut=true;saveMeta();
+  /* Animația pornește odată cu pagina, iar fereastra apare abia după 400ms plus
+     tranziția — deci primul gest, tocmai cel care trebuie văzut, se consuma pe
+     un ecran acoperit. Aici o luăm de la capăt, în clipa în care se deschide. */
+  tutorModal.querySelectorAll('.t-mana,.t-und,.t-scris,.t-jos').forEach(e=>{
+    e.style.animation='none'; void e.getBoundingClientRect(); e.style.animation='';
+  });
   tutorModal.classList.add('show');
   track('tutorial');
   return true;
@@ -2343,7 +2429,7 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden)raporteaza
 
 /* PWA: dacă fișierele auxiliare sunt alături, jocul se poate adăuga pe ecranul
    principal și scapă de browserul intern al Facebook. Lipsa lor nu strică nimic. */
-const CACHE_NAME="aer-b955de574a";
+const CACHE_NAME="aer-ffc48f511a";
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load',()=>{
     navigator.serviceWorker.register('sw.js').catch(()=>{});
