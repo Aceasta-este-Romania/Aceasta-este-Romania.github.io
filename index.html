@@ -58,9 +58,11 @@
 
   /* TABS */
   nav{display:flex;gap:5px;margin:10px 0 5px;background:rgba(255,255,255,.55);padding:5px;border-radius:16px;}
-  nav button{flex:1;border:0;background:transparent;font-family:inherit;font-weight:600;
-    font-size:clamp(10px,3.1vw,12.5px);white-space:nowrap;
-    padding:10px 2px;border-radius:12px;color:var(--grey);cursor:pointer;transition:.25s;line-height:1.1;}
+  /* Filele neactive au fundal, nu doar text gri: arătau ca niște etichete, nu ca
+     butoane, și sub 6% dintre jucători au descoperit vreodată celelalte două jocuri. */
+  nav button{flex:1;border:0;background:#fff;font-family:inherit;font-weight:700;
+    font-size:clamp(10px,3.1vw,12.5px);white-space:nowrap;box-shadow:0 1px 3px rgba(34,38,43,.08);
+    padding:10px 2px;border-radius:12px;color:var(--ink);cursor:pointer;transition:.25s;line-height:1.1;}
   nav button.active{background:var(--ink);color:#fff;box-shadow:0 4px 12px rgba(34,38,43,.25);}
   nav button.daily{flex:0 0 40px;font-size:16px;padding:10px 0;position:relative;}
   nav button.daily .dot{position:absolute;top:5px;right:6px;width:8px;height:8px;border-radius:50%;
@@ -334,6 +336,38 @@
     font-weight:700;font-size:13px;padding:11px;border-radius:24px;cursor:pointer;width:100%;margin-top:8px;
     text-transform:uppercase;letter-spacing:.5px;}
 
+  /* Demonstrația de la prima deschidere. Din măsurători: 86% dintre oameni plecau
+     fără să termine nivelul 1 — și NU fiindcă era greu (doar 3 sesiuni au greșit
+     vreodată acolo), ci fiindcă nu se vedea ce au de făcut. Se explică în imagine,
+     nu în text: cine trebuie să citească un paragraf ca să înceapă, nu începe. */
+  .tutor-demo{display:flex;flex-direction:column;gap:5px;align-items:center;margin:0 0 14px;}
+  .tutor-row{display:flex;gap:5px;}
+  .tutor-c{width:clamp(28px,8.4vw,36px);height:clamp(28px,8.4vw,36px);border-radius:9px;background:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;
+    font-size:clamp(14px,4.4vw,18px);color:var(--ink);}
+  .tutor-c.gol{background:var(--orange);color:#fff;box-shadow:0 3px 9px rgba(245,166,35,.45);}
+  .tutor-c.gol span{animation:tutorLit 4.2s infinite;}
+  .tutor-row:nth-of-type(2) .tutor-c.gol span{animation-delay:.55s;}
+  .tutor-row:nth-of-type(3) .tutor-c.gol span{animation-delay:1.1s;}
+  @keyframes tutorLit{0%,6%{opacity:0;transform:translateY(-7px);}
+    16%,90%{opacity:1;transform:none;}100%{opacity:0;transform:translateY(-7px);}}
+  .tutor-jos{display:flex;align-items:center;gap:8px;margin-top:7px;font-weight:800;
+    font-size:17px;letter-spacing:3px;color:var(--orange);animation:tutorCheie 4.2s infinite;}
+  .tutor-jos .sag{font-size:14px;letter-spacing:0;}
+  @keyframes tutorCheie{0%,38%{opacity:0;}48%,90%{opacity:1;}100%{opacity:0;}}
+  /* Fără mișcare, demonstrația trebuie să rămână lizibilă — nu goală. */
+  @media (prefers-reduced-motion:reduce){
+    .tutor-c.gol span,.tutor-jos{animation:none;opacity:1;transform:none;}
+  }
+
+  /* Cele trei jocuri, la alegere. Sub 6% dintre jucători găseau celelalte două. */
+  .modal .btn-joc{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:8px;
+    background:var(--mint);border:2px solid #b9d9c3;color:var(--ink);font-family:inherit;
+    font-weight:700;font-size:14px;padding:12px 14px;border-radius:20px;cursor:pointer;text-align:left;}
+  .modal .btn-joc:active{transform:translateY(2px);}
+  .modal .btn-joc .em{font-size:20px;}
+  .modal .btn-joc small{display:block;font-weight:600;font-size:11.5px;color:var(--grey);}
+
   .ad-overlay{position:fixed;inset:0;background:#0c0e10;z-index:300;display:none;flex-direction:column;
     align-items:center;justify-content:center;color:#fff;text-align:center;padding:30px;}
   .ad-overlay.show{display:flex;}
@@ -425,6 +459,29 @@
   <div class="bigstars" id="loginDays"></div>
   <div class="txt" id="loginTxt"></div>
   <button class="close" id="loginClose">Mulțumesc!</button>
+</div></div>
+
+<div class="modal-bg" id="tutorModal"><div class="modal">
+  <div class="lab">Cum se joacă</div>
+  <div class="tutor-demo">
+    <div class="tutor-row"><div class="tutor-c gol"><span>M</span></div><div class="tutor-c">A</div><div class="tutor-c">R</div><div class="tutor-c">E</div></div>
+    <div class="tutor-row"><div class="tutor-c gol"><span>A</span></div><div class="tutor-c">P</div><div class="tutor-c">O</div><div class="tutor-c">I</div></div>
+    <div class="tutor-row"><div class="tutor-c gol"><span>C</span></div><div class="tutor-c">A</div><div class="tutor-c">S</div><div class="tutor-c">Ă</div></div>
+    <div class="tutor-jos"><span class="sag">▼</span>MAC</div>
+  </div>
+  <div class="txt">Fiecărui rând îi lipsește <b>prima literă</b>.<br>
+    Citite de sus în jos, literele lipsă formează cuvântul cerut.</div>
+  <button class="close" id="tutorClose">Hai să încercăm</button>
+</div></div>
+
+<div class="modal-bg" id="jocuriModal"><div class="modal">
+  <div class="ico">🎲</div><div class="lab">Mai ai două jocuri</div>
+  <div class="txt">Sunt tot atâtea niveluri și la celelalte două. Le poți schimba oricând, din butoanele de sus.</div>
+  <button class="btn-joc" data-joc="search"><span class="em">🔍</span>
+    <span>Cuvântul ascuns<small>Îl găsești în grilă, tragând cu degetul</small></span></button>
+  <button class="btn-joc" data-joc="ana"><span class="em">🔀</span>
+    <span>Anagramă<small>Literele amestecate, de pus în ordine</small></span></button>
+  <button class="secondary" id="jocuriClose">Rămân la Coloană</button>
 </div></div>
 
 <div class="ad-overlay" id="adOverlay">
@@ -814,7 +871,7 @@ const LEXICON=[
 ["ALEAN","Dor adânc, amestecat cu tristețe"]
 ];
 
-const FILLER=["ABUR", "ACRU", "ACT", "ADÂNC", "AER", "AFARĂ", "AJUN", "ALAMĂ", "ALBUM", "ALBĂSTREL", "ALEE", "ALGĂ", "ALTAR", "ALUAT", "ALUN", "AMIAZĂ", "AMINTIRE", "AMURG", "AMĂNUNT", "ANOTIMP", "ANTENĂ", "APROAPE", "APUS", "APĂ", "ARAMĂ", "ARAT", "ARC", "ARGILĂ", "ARGINTIU", "ARHITECT", "ARICI", "ARIN", "ARIPĂ", "ARMONIE", "ARMĂ", "ASCUNZIȘ", "ASFINȚIT", "ASPRU", "ATELIER", "ATLAS", "AUR", "AVENTURĂ", "AZUR", "AȚĂ", "BAIE", "BAL", "BALCONAȘ", "BALON", "BANCĂ", "BANI", "BAR", "BARZĂ", "BATISTĂ", "BAZĂ", "BEC", "BEȚE", "BILET", "BILĂ", "BIROU", "BLOC", "BLÂND", "BOB", "BOGĂȚIE", "BOLNAVĂ", "BOLTĂ", "BORȘ", "BOU", "BRAD", "BRAZI", "BRAȚ", "BRIZĂ", "BRUMĂRIU", "BRÂU", "BUCATĂ", "BUCURIE", "BUCĂTAR", "BUNĂTATE", "BUTOI", "BUZUNAR", "BUZĂ", "BĂRBĂȚIE", "CADĂ", "CAIS", "CAL", "CALM", "CANĂ", "CAP", "CAR", "CARTE", "CASĂ", "CATIFEA", "CEARĂ", "CEAS", "CER", "CERC", "CETATE", "CIOC", "CIOCOLATĂ", "CIOCÂRLIE", "CITAT", "CLAR", "CLOPOȚEL", "COADĂ", "COD", "COIF", "COLAC", "COLIER", "CONCEDIU", "COPILĂRIE", "CORB", "CORĂBIER", "COVRIGEL", "COȘ", "CRAI", "CRIN", "CRUCE", "CRĂCIUN", "CUB", "CUC", "CUI", "CULOAR", "CUMINTE", "CUPĂ", "CURCUBEU", "CUREA", "CÂNTĂREȚ", "CĂLDURĂ", "CĂLĂTOR", "CĂRUCIOR", "DALTĂ", "DAMĂ", "DANS", "DAR", "DATĂ", "DEAL", "DEC", "DEGET", "DEPARTE", "DEPĂRTARE", "DESCÂNTEC", "DESEN", "DESTOINIC", "DIMINEAȚĂ", "DIN", "DINTE", "DOBITOC", "DOCTOR", "DOINĂ", "DOM", "DOMN", "DOMNIȚĂ", "DOP", "DOR", "DOVADĂ", "DRAG", "DRAGOSTE", "DRAPEL", "DRUM", "DRUMEȚIE", "DUD", "DUH", "DULAP", "DULCEAȚĂ", "DUMBRAVĂ", "DUNGĂ", "DUNĂ", "DUREZ", "DĂRNICIE", "ECHILIBRU", "ECHIPĂ", "ECOU", "ECRAN", "EDITOR", "EFECT", "EFORT", "EGAL", "ELAN", "ELEGANȚĂ", "ELEV", "ELEVATOR", "ELF", "ELICE", "ELIXIR", "EMAIL", "EMIR", "EMOȚIE", "ENERGIE", "ENTUZIASM", "EPICĂ", "EPISCOP", "EPOCĂ", "EPOPEE", "EROARE", "EROU", "ERĂ", "ESENȚIAL", "ESEU", "ETAJ", "ETATE", "ETIC", "ETICHETĂ", "EVANTAI", "EXACT", "EXAMEN", "EXCURSIE", "EXEMPLU", "EXIL", "EXPEDIȚIE", "EXPERT", "EXPLICAT", "FAGURE", "FALEZĂ", "FAN", "FANTEZIE", "FAPTĂ", "FAR", "FARMACIE", "FATĂ", "FAȚĂ", "FELINAR", "FEREASTRĂ", "FIARĂ", "FIER", "FIERĂRIE", "FILOZOFIE", "FIR", "FIȘĂ", "FLOARE", "FLUTURAȘ", "FOAIE", "FOC", "FOCAR", "FOND", "FORMĂ", "FRATE", "FRICĂ", "FRIG", "FRUMUSEȚE", "FRUNTE", "FRĂMÂNTAT", "FUM", "FURCĂ", "FURTUNĂ", "FÂN", "FÂNTÂNAR", "GALANTAR", "GALBEN", "GALĂ", "GAMĂ", "GARD", "GARĂ", "GAZ", "GEAM", "GENEROS", "GENUNE", "GER", "GERMENE", "GHEM", "GHID", "GHIOC", "GHIOCEL", "GINGAȘĂ", "GLAS", "GLOB", "GLĂSCIOR", "GOL", "GONG", "GOSPODAR", "GRADĂ", "GRAI", "GREU", "GREUTATE", "GRIJULIU", "GRIJĂ", "GROTĂ", "GRUP", "GRÂU", "GRĂDINAR", "GURĂ", "GUSTĂRICĂ", "GUTUIE", "GÂND", "GÂNDĂCEL", "GÂSCĂ", "HAIDUCIE", "HAINĂ", "HALĂ", "HAMAC", "HAMBARE", "HAN", "HAOS", "HAR", "HARNIC", "HARNICIE", "HARTĂ", "HAT", "HAZ", "HOINĂREL", "HOL", "HOP", "HORN", "HORNARI", "HORĂ", "HOTEL", "HOTĂRÂRE", "HRANĂ", "HRIB", "HRĂNITOR", "HULUB", "HUMĂ", "HUSĂ", "IAR", "IARBĂ", "IARMAROC", "IAZ", "ICOANĂ", "ICRE", "IDEE", "IDOL", "IEDERĂ", "IEPURAȘ", "IEPURE", "IERTARE", "IESLE", "IGIENĂ", "IGLU", "ILUMINAT", "ILUZIE", "IMAGINAR", "IMBOLD", "IMN", "IMPORTANT", "INDIGO", "INDUSTRIE", "INEL", "INIMĂ", "INSTANȚĂ", "INSULĂ", "INTRARE", "INVENTAR", "IRIS", "ISCUSINȚĂ", "IUBIRE", "IUBITOR", "IUTE", "IVIRE", "IZBÂNDĂ", "IZVOR", "JAF", "JALE", "JALNICĂ", "JAR", "JGHEABURI", "JILȚ", "JIR", "JOC", "JOS", "JUCĂRIE", "JUDECATĂ", "JUDEȚ", "JUMĂTATE", "JUNE", "JUPÂNEASĂ", "JUR", "JURNALIST", "LAC", "LADĂ", "LALEA", "LAMĂ", "LAN", "LANȚ", "LAPTE", "LARG", "LARMĂ", "LATURĂ", "LEAC", "LEAGĂNE", "LEGE", "LEGĂNARE", "LEMN", "LENTĂ", "LEU", "LIBERTATE", "LIMBĂ", "LIMPEZIME", "LIN", "LINIE", "LINIȘTIT", "LITRU", "LOC", "LOGODNICĂ", "LOPATĂ", "LUCEAFĂR", "LUMÂNARE", "LUNCĂ", "LUNECUȘ", "LUNĂ", "LUP", "LUT", "LĂCUSTĂ", "LĂUTARI", "MAC", "MAL", "MARE", "MARFĂ", "MASĂ", "MEDIU", "MELC", "MERS", "MEȘTEȘUG", "MIE", "MIEL", "MIERE", "MIEZ", "MINGE", "MINUNATĂ", "MIREASMĂ", "MOARĂ", "MOLDOVEAN", "MOMENT", "MORMÂNT", "MOTOR", "MOȘ", "MUGURE", "MULȚUMIRE", "MUNTE", "MUNTEANCĂ", "MURĂ", "MÂNĂ", "MĂIESTRIE", "MĂNĂSTIRE", "MĂR", "MĂRȚIȘOR", "NAI", "NALBĂ", "NAP", "NAS", "NAVĂ", "NEA", "NEAM", "NECAZURI", "NEGRU", "NEGUSTOR", "NEMURIRE", "NEPOATĂ", "NERV", "NICOVALĂ", "NIMB", "NISIP", "NOAPTE", "NOD", "NOR", "NOROCOS", "NOTĂ", "NUC", "NUFĂR", "NUIA", "NUME", "NUNTAȘI", "NUNTĂ", "NĂDEJDE", "NĂLUCĂ", "NĂVOD", "NĂVODARI", "OAIE", "OAZĂ", "OBICEIURI", "OBIECT", "OBRAZ", "OCEAN", "OCHEAN", "OCHI", "OCOL", "OCROTIRE", "ODAIE", "ODIHNITOR", "OFTAT", "OGLINDIRE", "OGOR", "OLAR", "OLTEAN", "OMENESC", "OMĂT", "ONOARE", "OPAL", "OPERĂ", "OPINCUȚĂ", "OPINCĂ", "ORAȘ", "ORBITĂ", "ORDINE", "OREZ", "ORGANISM", "ORGĂ", "ORIZONTAL", "ORĂ", "OSPĂȚ", "OSTAȘ", "OSTENEALĂ", "OTRĂVIT", "OVĂZ", "OȚEL", "OȚET", "PACE", "PALAT", "PALAVRE", "PANTĂ", "PANĂ", "PAR", "PARC", "PASTĂ", "PATĂ", "PENAR", "PERGAMENT", "PERLĂ", "PIATRĂ", "PICTURĂ", "PILDĂ", "PIN", "PISC", "PIVOT", "PIX", "PLASĂ", "PLIMBARE", "PLOP", "PLUG", "POD", "POJAR", "POLEN", "POM", "PORC", "PORT", "POVESTIRE", "POȘTĂ", "PRAF", "PRAG", "PRIETENIE", "PRIMĂVARĂ", "PROASPĂT", "PRĂJITURĂ", "PUI", "PUNCT", "PUNTE", "PUTERNIC", "PĂDURICE", "PĂR", "PĂSTORIT", "RAC", "RADIO", "RAFT", "RAI", "RAMĂ", "RANĂ", "RAZĂ", "RAȚĂ", "REGE", "REGĂSIRE", "REN", "RESPECT", "REST", "REȚEA", "RIDICHE", "RITM", "ROB", "ROCĂ", "ROD", "ROI", "ROL", "ROMB", "ROMÂNESC", "ROTOCOL", "ROUĂ", "RUBIN", "RUG", "RUGĂCIUNE", "RUINĂ", "RUJ", "RUPT", "RÂND", "RÂNDUNICĂ", "RÂPĂ", "RÂS", "RÂU", "RĂBDARE", "RĂCOROS", "RĂSĂRIT", "RĂU", "RĂZBOINIC", "SAC", "SALCÂM", "SANIE", "SARE", "SAT", "SCARĂ", "SCOP", "SCRISOARE", "SCUT", "SCĂPARE", "SEC", "SEIF", "SEMN", "SEMĂNAT", "SFAT", "SIGUR", "SIMPATIC", "SITĂ", "SLOI", "SOARE", "SOBĂ", "SOL", "SOMN", "SPERANȚĂ", "SPIC", "SPUMĂ", "STEA", "STEJARI", "STOL", "STRAT", "STRĂLUCIT", "SUC", "SUFLET", "SUFLETE", "SURPRIZĂ", "SURSĂ", "SĂNĂTATE", "SĂRBĂTORI", "TABLĂ", "TAC", "TACÂM", "TAINĂ", "TALAZ", "TALISMAN", "TALPĂ", "TARE", "TAUR", "TEAMĂ", "TEANC", "TEATRU", "TEI", "TEMEINIC", "TEMĂ", "TERMEN", "TIGRU", "TIMP", "TIMPURIU", "TINEREȚE", "TIPAR", "TIR", "TOAMNĂ", "TOBĂ", "TOCĂ", "TON", "TORT", "TRADIȚIE", "TRANDAFIR", "TRAP", "TREN", "TRIB", "TROLEIBUZ", "TROPICAL", "TRUP", "TUB", "TUFĂ", "TUNET", "TURN", "TURTĂ", "TĂCERILE", "TĂMĂDUIT", "TĂRÂMURI", "UGER", "UIMIRE", "UIMITOR", "UITARE", "ULCIOARE", "ULCIOR", "ULEI", "ULIȚĂ", "ULM", "UMBRELĂ", "UMBRĂ", "UMED", "UMILINȚĂ", "UMĂR", "UNDĂ", "UNELTIRE", "UNGHI", "UNIRE", "UNIVERSAL", "UNT", "URCUȘ", "URCUȘURI", "URIAȘ", "URIAȘII", "URMĂ", "URNĂ", "URS", "URZICĂ", "UZINĂ", "UȘURINȚĂ", "UȘĂ", "VACĂ", "VAGON", "VAL", "VALIZĂ", "VAMĂ", "VAR", "VARZĂ", "VARĂ", "VAS", "VATRĂ", "VATĂ", "VECHI", "VECHIME", "VERB", "VERDE", "VERDEAȚĂ", "VESELIE", "VESTĂ", "VIAȚĂ", "VID", "VIFOR", "VIITOARE", "VIN", "VIRUS", "VIS", "VITĂ", "VOCE", "VOIE", "VOINICIE", "VOLUM", "VOPSITOR", "VREDNICIE", "VULCAN", "VULPE", "VÂLTOARE", "VÂNT", "VÂNĂTOARE", "VĂLURELE", "ZAHARISIT", "ZAR", "ZARE", "ZBOR", "ZBURĂTOR", "ZEAMĂ", "ZEBRĂ", "ZESTRE", "ZEU", "ZGOMOTOS", "ZGURĂ", "ZIAR", "ZID", "ZIDAR", "ZIDĂRIE", "ZIMBRU", "ZONĂ", "ZOR", "ZORELELE", "ZORI", "ZUMZET", "ZVELT", "ZÂMBITOR", "ZÂNĂ", "ZĂBOVIRE", "ZĂGAZ", "ZĂLOGIRE", "ZĂPADĂ", "ȘAH", "ȘAL", "ȘANSĂ", "ȘANTIERE", "ȘAPTE", "ȘARPE", "ȘCOALĂ", "ȘCOLARI", "ȘEF", "ȘIR", "ȘIRETENIE", "ȘOIM", "ȘOIMANI", "ȘOPTITOR", "ȘOSEA", "ȘTERGĂTOR", "ȘTIULETE", "ȘURUB", "ȘURĂ", "ȘUVIȚELE", "ȚAP", "ȚARC", "ȚARĂ", "ȚEAVĂ", "ȚEL", "ȚESUT", "ȚESĂTURĂ", "ȚIGLĂ", "ȚIGĂNCUȘĂ", "ȚINTĂ", "ȚINUTURI", "ȚIPAR", "ȚIPĂT", "ȚIPĂTOR", "ȚĂRAN", "ȚĂRM", "ȚĂRMURI", "ȚĂRÂNII", "ȚĂRĂNESC"];
+const FILLER=["ABUR", "ACRU", "ACT", "ADÂNC", "ADĂPOSTUL", "AER", "AFARĂ", "AJUN", "ALAMĂ", "ALBINUȚĂ", "ALBUM", "ALBĂSTREL", "ALEE", "ALERGARE", "ALGĂ", "ALTAR", "ALUAT", "ALUN", "ALUNECOS", "AMIAZĂ", "AMINTIRE", "AMURG", "AMURGURI", "AMĂNUNT", "ANIMALIC", "ANOTIMP", "ANTENĂ", "APROAPE", "APUS", "APĂ", "APĂRĂTOR", "ARAMĂ", "ARAT", "ARC", "ARGILĂ", "ARGINTIU", "ARHITECT", "ARICI", "ARIN", "ARIPĂ", "ARMONIE", "ARMĂ", "ARĂTURĂ", "ASCULTARE", "ASCUNZIȘ", "ASFINȚIT", "ASPRIMEA", "ASPRU", "ATELIER", "ATLAS", "ATÂRNARE", "AUR", "AVENTURĂ", "AZUR", "AȘTEPTARE", "AȚĂ", "BAIE", "BAL", "BALCONAȘ", "BALON", "BANCĂ", "BANI", "BAR", "BARZĂ", "BATISTĂ", "BAZĂ", "BEC", "BEȚE", "BILET", "BILĂ", "BIROU", "BISERICĂ", "BLOC", "BLÂND", "BLÂNDEȚE", "BOB", "BOGĂȚIE", "BOLNAVĂ", "BOLOVANI", "BOLTĂ", "BORDEIUL", "BORȘ", "BOU", "BRAD", "BRAZI", "BRAȚ", "BRIZĂ", "BRUMĂRIU", "BRÂU", "BUCATĂ", "BUCHETUL", "BUCURIE", "BUCĂTAR", "BUNICUȚA", "BUNĂTATE", "BURETELE", "BUTOI", "BUZUNAR", "BUZĂ", "BĂLTOACĂ", "BĂRBĂȚIE", "BĂTRÂNEȚE", "CADĂ", "CAIS", "CAL", "CALM", "CANĂ", "CAP", "CAR", "CARTE", "CASĂ", "CATIFEA", "CEARĂ", "CEAS", "CEASORNIC", "CER", "CERC", "CERCELUȘ", "CETATE", "CHIBRITUL", "CIOC", "CIOCOLATĂ", "CIOCÂRLIE", "CITAT", "CIUPERCĂ", "CLAR", "CLOPOȚEL", "CLĂDIRE", "COADĂ", "COD", "COIF", "COLAC", "COLIER", "COMOARĂ", "CONCEDIU", "CONDEIUL", "COPACUL", "COPILĂRIE", "CORB", "CORĂBIER", "COVRIGEL", "COȘ", "CRAI", "CRENGUȚĂ", "CRIN", "CRUCE", "CRĂCIUN", "CUB", "CUC", "CUI", "CULOAR", "CUMINTE", "CUMPĂNĂ", "CUPĂ", "CURCUBEU", "CUREA", "CURĂȚENIE", "CÂNTĂREȚ", "CĂLDARE", "CĂLDURĂ", "CĂLĂTOR", "CĂPRIOARĂ", "CĂRUCIOR", "CĂRĂMIDĂ", "DALTĂ", "DAMĂ", "DANS", "DANTELĂ", "DAR", "DATĂ", "DEAL", "DEC", "DEGET", "DEPARTE", "DEPĂRTARE", "DESCHIS", "DESCÂNTEC", "DESEN", "DESENUL", "DESTOINIC", "DEȘTEPT", "DIMINEAȚĂ", "DIN", "DINTE", "DOBITOC", "DOBÂNDĂ", "DOCTOR", "DOINĂ", "DOM", "DOMN", "DOMNESC", "DOMNIȚĂ", "DOP", "DOR", "DOVADĂ", "DRAG", "DRAGOSTE", "DRAPEL", "DRUM", "DRUMEAG", "DRUMEȚIE", "DUD", "DUH", "DUIOȘIE", "DULAP", "DULCEAȚĂ", "DULĂPIOR", "DUMBRAVĂ", "DUMINICĂ", "DUNGĂ", "DUNĂ", "DUREZ", "DĂRNICIE", "DĂRUIRE", "ECHILIBRU", "ECHIPAJUL", "ECHIPĂ", "ECOU", "ECRAN", "EDITOR", "EFECT", "EFORT", "EGAL", "EGALITATE", "ELAN", "ELEFANȚI", "ELEGANȚĂ", "ELEV", "ELEVATOR", "ELF", "ELICE", "ELIXIR", "EMAIL", "EMIR", "EMOȚIE", "EMOȚIILE", "ENERGIE", "ENIGMELE", "ENTUZIASM", "EPICĂ", "EPISCOP", "EPOCĂ", "EPOPEE", "EROARE", "EROISMUL", "EROU", "ERĂ", "ESCALADĂ", "ESENȚIAL", "ESEU", "ETAJ", "ETATE", "ETIC", "ETICHETĂ", "EVANTAI", "EXACT", "EXAMEN", "EXCURSIE", "EXEMPLU", "EXIL", "EXPEDIȚIE", "EXPERT", "EXPLICAT", "EXPLOZIE", "EXTINDERE", "FAGURE", "FALEZĂ", "FAN", "FANTEZIE", "FAPTĂ", "FAR", "FARMACIE", "FATĂ", "FAȚĂ", "FELINAR", "FEREASTRĂ", "FIARĂ", "FIER", "FIERBINTE", "FIERĂRIE", "FILOZOFIE", "FIR", "FIȘĂ", "FLOARE", "FLORĂRIE", "FLUTURAȘ", "FOAIE", "FOC", "FOCAR", "FOIȘORUL", "FOLOSIRE", "FOND", "FORMĂ", "FRATE", "FRICĂ", "FRIG", "FRUMUSEȚE", "FRUNTE", "FRUNZIȘUL", "FRĂMÂNTAT", "FUM", "FURCĂ", "FURNICAR", "FURTUNĂ", "FÂN", "FÂNTÂNAR", "FÂȘIILE", "FĂCLIILE", "FĂGĂDUIT", "GALANTAR", "GALBEN", "GALĂ", "GAMĂ", "GARD", "GARĂ", "GAZ", "GEAM", "GENEROS", "GENUNE", "GER", "GERMENE", "GHEM", "GHID", "GHIOC", "GHIOCEL", "GHIVECIUL", "GINGAȘĂ", "GIUVAIER", "GLAS", "GLASURI", "GLOB", "GLĂSCIOR", "GOL", "GONG", "GOSPODAR", "GOSPODINĂ", "GRADĂ", "GRAI", "GREU", "GREUTATE", "GRIJULIU", "GRIJĂ", "GROTĂ", "GRUP", "GRÂNARUL", "GRÂU", "GRĂDINAR", "GRĂMADĂ", "GURĂ", "GUSTĂRICĂ", "GUTUIE", "GUTUILE", "GÂND", "GÂNDIRE", "GÂNDĂCEL", "GÂSCĂ", "GĂLEATĂ", "GĂLĂGIOS", "HAIDUCIE", "HAIDUCUL", "HAINĂ", "HALĂ", "HAMAC", "HAMBARE", "HAMBARUL", "HAN", "HANORACUL", "HAOS", "HAR", "HARNIC", "HARNICIE", "HARTĂ", "HAT", "HAZ", "HOINARUL", "HOINĂREL", "HOL", "HOP", "HORN", "HORNARI", "HORNURI", "HORĂ", "HOTARELE", "HOTEL", "HOTĂRÂRE", "HRANĂ", "HRIB", "HRĂNIRE", "HRĂNITOR", "HULUB", "HULUBII", "HUMĂ", "HUSĂ", "IAR", "IARBĂ", "IARMAROC", "IAZ", "ICOANELE", "ICOANĂ", "ICRE", "IDEE", "IDOL", "IEDERELE", "IEDERĂ", "IEPURAȘ", "IEPURE", "IERBURILE", "IERTARE", "IESLE", "IGIENĂ", "IGLU", "ILUMINAT", "ILUZIE", "ILUZIILE", "IMAGINAR", "IMBOLD", "IMBOLDUL", "IMN", "IMPORTANT", "INDIGO", "INDUSTRIE", "INEL", "INELUȘUL", "INIMOSUL", "INIMĂ", "INSTANȚĂ", "INSULĂ", "INTRARE", "INVENTAR", "IRIS", "ISCUSINȚĂ", "ISPRAVĂ", "IUBIRE", "IUBITOR", "IUTE", "IUȚEALĂ", "IVIRE", "IZBÂNDĂ", "IZVOR", "IZVORUL", "JAF", "JALE", "JALNICĂ", "JAR", "JELUIRE", "JGHEABURI", "JIGNIRE", "JILȚ", "JILȚURI", "JIR", "JOC", "JOCURILE", "JOS", "JUCĂRIE", "JUDECATĂ", "JUDEȚ", "JUMĂTATE", "JUNE", "JUPUIRE", "JUPÂNEASĂ", "JUR", "JURNALIST", "JURĂMÂNT", "JĂRATIC", "LAC", "LACRIMĂ", "LADĂ", "LALEA", "LAMĂ", "LAN", "LANȚ", "LAPTE", "LARG", "LARMĂ", "LATURĂ", "LEAC", "LEAGĂNE", "LEGE", "LEGENDĂ", "LEGĂNARE", "LEMN", "LEMNĂRIE", "LENTĂ", "LEU", "LIBERTATE", "LIMBĂ", "LIMPEZIME", "LIN", "LINGURĂ", "LINIE", "LINIȘTIT", "LITRU", "LOC", "LOCUINȚĂ", "LOGODNICĂ", "LOPATĂ", "LUCEAFĂR", "LUMINIȘ", "LUMÂNARE", "LUNCĂ", "LUNECUȘ", "LUNĂ", "LUP", "LUPTĂTOR", "LUT", "LĂCUSTĂ", "LĂMÂIȚĂ", "LĂSTUNUL", "LĂUDĂROS", "LĂUTARI", "MAC", "MAL", "MARE", "MARFĂ", "MASĂ", "MEDIU", "MELC", "MERS", "MEȘTERUL", "MEȘTEȘUG", "MIE", "MIEL", "MIERE", "MIEZ", "MIJLOCUL", "MINCIUNĂ", "MINGE", "MINUNATĂ", "MIREASMĂ", "MOARĂ", "MOCIRLĂ", "MOLDOVEAN", "MOMENT", "MORMÂNT", "MOTOR", "MOȘ", "MUGURE", "MUGURELE", "MULȚUMIRE", "MUNCITOR", "MUNTE", "MUNTEANCĂ", "MURMURUL", "MURĂ", "MÂNĂ", "MĂCELĂRIE", "MĂIESTRIE", "MĂLINUL", "MĂNĂSTIRE", "MĂR", "MĂRGEAUA", "MĂRȚIȘOR", "NAI", "NALBĂ", "NAP", "NAS", "NAVĂ", "NEA", "NEAM", "NEAMURI", "NECAZURI", "NEGRU", "NEGURILE", "NEGUSTOR", "NEMURIRE", "NEMȚESC", "NEPOATĂ", "NERV", "NICOVALĂ", "NIMB", "NISIP", "NISIPUL", "NOAPTE", "NOD", "NOR", "NOROCOS", "NOROIUL", "NOSTALGIE", "NOTĂ", "NUC", "NUFĂR", "NUIA", "NUIELELE", "NUME", "NUNTAȘI", "NUNTĂ", "NĂDEJDE", "NĂDRAGII", "NĂLUCĂ", "NĂPASTĂ", "NĂSTUREL", "NĂVOD", "NĂVODARI", "OAIE", "OASPETE", "OAZĂ", "OBICEIURI", "OBIECT", "OBIȘNUIT", "OBRAZ", "OCEAN", "OCHEAN", "OCHELARI", "OCHI", "OCOL", "OCROTIRE", "ODAIE", "ODIHNITOR", "ODĂILOR", "OFERIRE", "OFTAT", "OGLINDIRE", "OGOR", "OLAR", "OLTEAN", "OLĂRITUL", "OMENESC", "OMENIREA", "OMĂT", "ONOARE", "OPAL", "OPERĂ", "OPINCUȚĂ", "OPINCĂ", "ORAȘ", "ORBITĂ", "ORDINE", "OREZ", "ORGANISM", "ORGĂ", "ORIZONTAL", "ORĂ", "ORĂȘENII", "OSPĂȚ", "OSPĂȚUL", "OSTAȘ", "OSTENEALĂ", "OTRĂVIT", "OVĂZ", "OȚEL", "OȚELĂRIE", "OȚET", "PACE", "PALAT", "PALAVRE", "PANTĂ", "PANĂ", "PAR", "PARC", "PARFUMUL", "PASTĂ", "PATĂ", "PEISAJUL", "PENAR", "PERDELE", "PERGAMENT", "PERLĂ", "PIATRĂ", "PICTURĂ", "PIETRIȘ", "PILDĂ", "PIN", "PISC", "PIVOT", "PIX", "PLASĂ", "PLIMBARE", "PLOP", "PLOPILOR", "PLUG", "PLĂCINTĂ", "POD", "POJAR", "POLEN", "POM", "PORC", "PORT", "PORUMBEL", "POVESTIRE", "POȘTĂ", "PRAF", "PRAG", "PRIETENIE", "PRIMĂVARĂ", "PRIVIRE", "PROASPĂT", "PRĂJITURĂ", "PUFOAICĂ", "PUI", "PUNCT", "PUNTE", "PUTERNIC", "PĂDURICE", "PĂIANJEN", "PĂLĂRIE", "PĂMÂNTUL", "PĂR", "PĂSTORIT", "PĂSTRARE", "RAC", "RADIO", "RAFT", "RAI", "RAMĂ", "RANĂ", "RAZĂ", "RAȚĂ", "RECOLTĂ", "REGE", "REGĂSIRE", "REGĂSIT", "REN", "RESPECT", "REST", "REȚEA", "RIDICARE", "RIDICHE", "RITM", "ROB", "ROCĂ", "ROD", "ROI", "ROL", "ROMB", "ROMÂNESC", "ROTOCOL", "ROTUNJIT", "ROUĂ", "RUBIN", "RUG", "RUGINIU", "RUGĂCIUNE", "RUINĂ", "RUJ", "RUPT", "RÂND", "RÂNDUNICĂ", "RÂPĂ", "RÂS", "RÂU", "RÂURILE", "RĂBDARE", "RĂCHITĂ", "RĂCOROS", "RĂDĂCINĂ", "RĂSFĂȚAT", "RĂSPUNSUL", "RĂSTIMPUL", "RĂSĂRIT", "RĂU", "RĂZBOINIC", "RĂZLEȚIT", "SAC", "SALCÂM", "SANIE", "SARE", "SAT", "SCARĂ", "SCOP", "SCRISOARE", "SCUT", "SCÂNTEIE", "SCĂPARE", "SEC", "SEIF", "SEMN", "SEMĂNAT", "SEMĂNĂTOR", "SFAT", "SFĂTUIRE", "SIGUR", "SIHĂSTRIE", "SIMPATIC", "SITĂ", "SLOI", "SMÂNTÂNĂ", "SOARE", "SOARELUI", "SOBĂ", "SOL", "SOMN", "SPERANȚĂ", "SPIC", "SPINAREA", "SPUMĂ", "STEA", "STEJARI", "STOL", "STRAT", "STRĂLUCIT", "STÂNJENEL", "SUC", "SUFLARE", "SUFLET", "SUFLETE", "SUPĂRARE", "SURPRIZĂ", "SURSĂ", "SĂLBATIC", "SĂNIUȚĂ", "SĂNĂTATE", "SĂRBĂTORI", "TABLĂ", "TAC", "TACÂM", "TAINĂ", "TALAZ", "TALISMAN", "TALPĂ", "TARE", "TAUR", "TEAMĂ", "TEANC", "TEATRU", "TEI", "TEIULUI", "TELEGARI", "TEMEINIC", "TEMĂ", "TERMEN", "TIGRU", "TIMP", "TIMPURIU", "TINEREȚE", "TIPAR", "TIR", "TOAMNELE", "TOAMNĂ", "TOBĂ", "TOCĂ", "TON", "TOPORAȘI", "TORT", "TRADIȚIE", "TRANDAFIR", "TRAP", "TREN", "TRIB", "TRISTEȚE", "TROLEIBUZ", "TROPICAL", "TRUP", "TRĂSURĂ", "TUB", "TUFIȘURI", "TUFĂ", "TUNET", "TURN", "TURNULEȚ", "TURTĂ", "TÂMPLARI", "TĂCERILE", "TĂIETURĂ", "TĂMĂDUIT", "TĂRIILE", "TĂRÂMURI", "UGER", "UIMIRE", "UIMIREA", "UIMITOR", "UITARE", "ULCIOARE", "ULCIOR", "ULEI", "ULIȚELE", "ULIȚĂ", "ULM", "UMBLETUL", "UMBRELĂ", "UMBRĂ", "UMED", "UMEZEALĂ", "UMILINȚĂ", "UMĂR", "UNDĂ", "UNELTIRE", "UNGHERUL", "UNGHI", "UNIRE", "UNIVERSAL", "UNT", "URCUȘ", "URCUȘURI", "URIAȘ", "URIAȘII", "URLETUL", "URMĂ", "URNĂ", "URS", "URZICILE", "URZICĂ", "USTUROI", "UZINĂ", "UȘURARE", "UȘURINȚĂ", "UȘĂ", "VACĂ", "VAGON", "VAL", "VALIZĂ", "VALURILE", "VAMĂ", "VAR", "VARZĂ", "VARĂ", "VAS", "VATRĂ", "VATĂ", "VECHI", "VECHIME", "VECINII", "VERB", "VERDE", "VERDEAȚĂ", "VESELIE", "VESTITUL", "VESTĂ", "VIAȚĂ", "VID", "VIFOR", "VIFORUL", "VIITOARE", "VIN", "VIORELE", "VIRUS", "VIS", "VITEJIA", "VITĂ", "VOCE", "VOIE", "VOINICIE", "VOIOȘIE", "VOLUM", "VOPSITOR", "VREDNICIE", "VULCAN", "VULPE", "VULTURUL", "VÂLTOARE", "VÂNT", "VÂNTURI", "VÂNĂTOARE", "VĂGĂUNĂ", "VĂLURELE", "VĂRATIC", "ZAHARISIT", "ZAMBILE", "ZAR", "ZARE", "ZBOR", "ZBUCIUM", "ZBURĂTOR", "ZEAMĂ", "ZEBRĂ", "ZESTRE", "ZEU", "ZGOMOTOS", "ZGURĂ", "ZIAR", "ZID", "ZIDAR", "ZIDURILE", "ZIDĂRIE", "ZIMBRU", "ZMEURIȘ", "ZONĂ", "ZOR", "ZORELELE", "ZORI", "ZORILOR", "ZUMZET", "ZVELT", "ZÂMBITOR", "ZÂNĂ", "ZĂBOVIRE", "ZĂBRELE", "ZĂCĂMÂNT", "ZĂGAZ", "ZĂLOGIRE", "ZĂPADĂ", "ZĂPEZILE", "ZĂRILOR", "ȘAH", "ȘAL", "ȘANSĂ", "ȘANTIERE", "ȘAPTE", "ȘARPE", "ȘARPELUI", "ȘCOALĂ", "ȘCOLARI", "ȘEF", "ȘERPUIRE", "ȘEZĂTOARE", "ȘIR", "ȘIRAGURI", "ȘIRETENIE", "ȘOAPTELE", "ȘOIM", "ȘOIMANI", "ȘOPRONUL", "ȘOPTITOR", "ȘOSEA", "ȘTERGĂTOR", "ȘTIRBUL", "ȘTIULETE", "ȘUIERAT", "ȘURUB", "ȘURĂ", "ȘUVIȚELE", "ȘĂGALNIC", "ȚAP", "ȚARC", "ȚARINELE", "ȚARĂ", "ȚEAVĂ", "ȚEL", "ȚESUT", "ȚESĂTORI", "ȚESĂTURĂ", "ȚIGLELE", "ȚIGLĂ", "ȚIGĂNCUȘĂ", "ȚINEREA", "ȚINTĂ", "ȚINUTURI", "ȚIPAR", "ȚIPĂT", "ȚIPĂTOR", "ȚIȚEIUL", "ȚOPĂIRE", "ȚURȚURII", "ȚĂNDĂRI", "ȚĂRAN", "ȚĂRANCĂ", "ȚĂRM", "ȚĂRMURI", "ȚĂRÂNII", "ȚĂRĂNESC"];
 
 /* Ordinea de joc: nivelul N foloseste LEXICON[ORDINE.joc[N-1]].
    Lista de mai sus e ordinea DIFICULTATII si e scrisa pe teme;
@@ -829,7 +886,7 @@ const ORDINE={
 /* Randurile Coloanei, precalculate: indici in FILLER, cate unul pe litera
    a cheii. Alese asa incat acelasi cuvant sa nu reapara la niveluri
    apropiate si ca lista sa fie parcursa uniform. */
-const COL_RANDURI=[[497, 83, 289, 321], [691, 576, 623], [607, 493, 422, 435], [596, 81, 4, 675, 459], [486, 267, 475, 579], [702, 330, 437], [117, 577, 194, 335, 474, 436], [367, 680, 626], [211, 347, 199, 580, 7, 552], [601, 97, 297, 343, 645], [405, 198, 368, 114], [683, 586, 190, 88, 290, 184], [710, 182, 81, 342, 441], [613, 34, 553, 203], [752, 189, 611, 667, 569, 168], [103, 193, 563, 59], [650, 679, 548, 434], [519, 315, 181, 529, 637], [100, 15, 568, 635, 487, 218], [242, 570, 684, 463, 644, 177], [526, 185, 550, 172, 629, 208], [496, 374, 22, 573], [551, 695, 783, 325, 447, 197], [283, 559, 169, 316, 175, 567], [21, 387, 653, 33, 556], [234, 562, 685, 92, 636], [423, 317, 176, 379], [450, 1, 614], [143, 490, 118, 630, 468, 566], [499, 62, 558, 38, 747], [32, 578, 324, 112, 311], [774, 682, 554, 689, 68], [95, 571, 171, 314, 202, 564], [99, 26, 365], [492, 505, 35, 333, 792], [540, 396, 670, 278], [87, 549, 344, 455], [408, 471, 560, 11, 572], [508, 40, 85, 173], [737, 328, 622, 111, 481, 393], [109, 398, 491, 542, 478, 657], [152, 318, 433, 655, 180], [120, 391, 206, 772, 656, 183], [82, 696, 102], [764, 715, 477, 443], [754, 10, 557, 188], [119, 323, 467, 48, 42, 438], [476, 3, 337, 192], [777, 31, 555, 525, 191], [734, 336, 213, 473, 585], [646, 170, 319], [647, 465, 509, 480, 581], [612, 178, 407, 453], [725, 547, 2, 57, 327, 174], [728, 692, 339, 179, 666], [300, 23, 421, 56, 14, 565], [371, 13, 370, 196, 6], [414, 332, 591, 634, 193, 575], [340, 676, 54, 334, 582, 206], [29, 392, 187, 36, 444], [47, 469, 686], [775, 464, 345, 404], [104, 312, 470, 94, 20, 451], [96, 472, 140, 577, 674], [409, 698, 587, 429, 687, 574], [609, 27, 375, 86, 329, 198], [315, 170], [106, 485, 113, 489, 784], [43, 410, 672, 578, 258], [424, 205, 583, 207, 690], [53, 688, 355, 483, 567], [740, 411, 175, 694], [524, 693, 663, 202, 581, 190], [122, 192, 551, 136, 0, 105], [204, 101, 494, 673], [501, 617, 627, 555, 500, 713], [590, 652, 25, 699, 366], [506, 394, 488, 507], [514, 554, 39, 750, 448, 312, 115], [362, 272, 293, 195, 9, 46], [751, 169, 238, 332, 576], [743, 502, 553, 324], [124, 479, 349, 482, 91], [84, 697, 548, 8, 348], [282, 678, 625, 659], [77, 30, 377, 12, 677, 582], [593, 661, 199, 361, 37, 565], [319, 5, 660, 17, 93], [449, 495, 563, 484, 99], [498, 110, 466, 382], [545, 383, 24, 321], [243, 381, 669, 311, 197, 573], [528, 5, 586, 231, 675, 417], [412, 677, 270, 699, 550], [301, 473, 639, 16, 561], [30, 510, 672, 610], [706, 679, 388, 640, 676, 552], [732, 203, 592, 648, 182], [428, 184, 562, 330, 456, 144, 188], [123, 486, 654], [599, 638, 560, 344, 273, 474, 327], [616, 96, 568, 323, 445], [64, 549, 7, 154], [484, 166, 23, 314, 180], [536, 671, 418, 446], [454, 11, 317], [122, 497, 564, 79], [105, 489, 385, 316, 461, 146], [130, 176, 603, 633, 345, 439], [107, 307, 313, 390, 331, 209], [515, 493, 559, 103], [503, 572, 335, 156, 700, 470, 575], [701, 318, 791, 196, 389], [106, 695, 342], [74, 18, 624, 430], [225, 580, 12, 651, 173], [61, 557, 680, 649, 39, 566], [148, 178, 269, 171, 664], [522, 185, 598, 113, 13, 547], [584, 41, 126], [45, 682, 457, 329, 94], [117, 571, 471, 347, 662, 482, 562], [619, 541, 8, 642, 183], [212, 697, 372, 251, 208, 577], [228, 19, 597, 477, 378, 200], [254, 26, 559, 134], [518, 174, 530, 172, 462, 194], [520, 380, 334, 114], [628, 685, 454, 181, 665], [544, 492, 584, 681, 416, 76], [93, 670, 550, 641, 191], [419, 465, 551, 92, 479, 708], [748, 340, 34, 580], [124, 669, 801, 325, 643], [539, 338, 90, 341, 481, 587], [85, 292, 203, 337, 194], [10, 555, 129, 184, 329], [512, 174, 565, 153, 206, 43], [369, 199, 403, 457], [513, 494, 731, 201, 604, 658, 186], [83, 1, 214, 181, 22], [119, 2, 324, 198, 632], [406, 325, 169, 549, 197], [229, 342, 190, 552], [538, 499, 142], [88, 191, 6, 316], [749, 321], [696, 437, 632], [0, 688, 547], [452, 326, 621, 320, 537], [287, 469, 586, 433], [439, 500, 14, 533, 635, 172], [100, 24, 576, 455, 176], [312, 202, 521, 683, 566, 185], [523, 28, 304, 9, 569], [373, 686, 527], [120, 478, 723, 468, 557], [3, 548, 257, 314, 456, 649], [605, 691, 451, 182, 664], [244, 671, 420], [627, 318, 427, 531], [453, 694, 402, 193], [72, 674, 81, 693, 581, 319, 183], [735, 485, 118, 188], [618, 631, 179, 18], [733, 25, 397, 180], [311, 765, 717, 480, 553], [149, 464, 573], [630, 575, 208, 436], [239, 395, 684, 668, 681, 583, 201], [386, 42, 95], [720, 689, 388, 517, 171], [727, 345, 594], [115, 32, 572, 629, 173], [516, 207, 776, 631, 205], [413, 37, 554, 192], [215, 27, 401, 330, 374, 323, 196], [389, 20, 534, 640, 178], [431, 683, 449, 636, 175], [35, 712, 322, 498, 458], [112, 170, 571], [133, 185, 31, 375], [87, 184, 4, 620], [496, 567, 17, 767], [730, 38, 376], [504, 368, 472, 15, 335, 196], [602, 488, 40, 564, 199], [226, 495, 104], [589, 11, 651], [135, 560, 697, 425], [86, 502, 511, 315, 397], [233, 383, 487, 37, 582, 178], [535, 24, 662], [354, 476, 82], [438, 501, 578], [507, 568, 317, 170, 661, 176, 447], [109, 490, 515, 30, 89]];
+const COL_RANDURI=[[606, 108, 361, 417], [895, 704, 782], [754, 631, 520, 557], [770, 129, 39, 866, 569], [637, 317, 609, 709], [905, 434, 554], [147, 735, 217, 436, 639, 581], [464, 863, 814], [276, 426, 234, 700, 49, 705], [790, 151, 375, 418, 807], [523, 227, 491, 142], [856, 703, 241, 155, 386, 232], [932, 231, 102, 409, 553], [797, 6, 714, 222], [967, 228, 781, 826, 750, 238], [145, 256, 732, 96], [810, 869, 701, 556], [690, 405, 259, 660, 841], [120, 12, 706, 835, 621, 265], [274, 724, 884, 571, 848, 262], [665, 230, 741, 219, 812, 239], [594, 471, 26, 748], [716, 868, 1004, 432, 588, 251], [341, 730, 216, 438, 221, 743], [42, 476, 855, 46, 726], [297, 742, 860, 128, 815], [533, 398, 254, 478], [586, 48, 786], [197, 608, 146, 811, 634, 710], [622, 76, 744, 11, 964], [19, 712, 419, 150, 394], [990, 857, 740, 858, 59], [133, 707, 258, 424, 255, 725], [158, 37, 467], [611, 652, 4, 416, 1019], [644, 482, 877, 355], [136, 728, 437, 565], [526, 625, 710, 16, 741], [663, 10, 132, 240], [909, 427, 759, 143, 640, 481], [131, 509, 600, 645, 619, 819], [167, 412, 585, 805, 243], [160, 499, 218, 989, 842, 236], [109, 885, 111], [981, 910, 598, 568], [963, 20, 751, 223], [161, 423, 607, 64, 18, 572], [617, 44, 439, 214], [1000, 40, 745, 657, 260], [940, 395, 284, 602, 736], [838, 244, 397], [813, 597, 655, 596, 746], [800, 215, 530, 577], [937, 731, 52, 87, 414, 242], [934, 871, 425, 225, 816], [388, 13, 528, 78, 25, 747], [503, 9, 493, 248, 34], [545, 430, 777, 850, 261, 715], [415, 862, 77, 402, 725, 253], [35, 497, 247, 22, 564], [92, 632, 894], [1003, 630, 420, 532], [135, 406, 636, 121, 36, 582], [119, 601, 207, 751, 864], [538, 876, 744, 537, 889, 748], [801, 54, 500, 157, 411, 235], [413, 237], [137, 626, 163, 628, 996], [24, 541, 867, 726, 347], [548, 257, 716, 226, 859], [91, 882, 445, 616, 715], [951, 524, 263, 872], [693, 891, 827, 264, 747, 260], [162, 216, 742, 185, 23, 114], [247, 156, 605, 861], [615, 766, 840, 712, 614, 938], [753, 833, 50, 879, 479], [685, 490, 623, 670], [694, 730, 43, 950, 589, 407, 122], [456, 324, 370, 253, 27, 99], [970, 248, 280, 435, 731], [962, 640, 750, 431], [159, 637, 444, 609, 139], [154, 875, 743, 45, 442], [351, 893, 767, 839], [97, 30, 498, 36, 890, 707], [762, 831, 223, 453, 52, 736], [403, 43, 851, 48, 126], [563, 598, 709, 626, 140], [636, 124, 607, 465], [677, 496, 22, 422], [306, 506, 868, 404, 242, 740], [695, 9, 745, 285, 890, 539], [525, 859, 344, 879, 746], [390, 608, 822, 25, 724], [26, 683, 860, 794], [930, 864, 484, 852, 862, 740], [942, 228, 798, 853, 258], [531, 238, 748, 428, 575, 175, 226], [134, 596, 844], [799, 834, 710, 433, 350, 630, 419], [772, 152, 743, 422, 590], [95, 745, 11, 181], [619, 179, 44, 418, 257], [666, 885, 518, 587], [560, 54, 420], [127, 617, 751, 94], [118, 628, 507, 428, 576, 186], [184, 231, 795, 854, 433, 559], [117, 384, 397, 494, 413, 225], [698, 605, 726, 140], [684, 724, 406, 180, 923, 601, 709], [900, 407, 1028, 240, 495], [122, 891, 405], [80, 30, 761, 519], [298, 747, 20, 817, 256], [89, 712, 884, 823, 40, 716], [178, 261, 340, 244, 848], [692, 254, 796, 134, 23, 741], [742, 45, 127], [58, 858, 562, 404, 121], [114, 736, 611, 415, 854, 632, 715], [783, 682, 24, 853, 234], [278, 857, 486, 357, 262, 725], [279, 35, 789, 594, 505, 236], [310, 19, 730, 176], [649, 235, 678, 215, 566, 237], [686, 488, 425, 118], [838, 889, 592, 214, 851], [659, 622, 750, 867, 551, 74], [162, 894, 707, 807, 263], [546, 597, 744, 135, 614, 943], [969, 409, 13, 731], [143, 876, 1031, 398, 831], [654, 437, 151, 402, 602, 746], [154, 382, 264, 411, 219], [4, 707, 205, 243, 432], [687, 223, 736, 174, 237, 27], [474, 244, 542, 584], [658, 615, 944, 263, 792, 822, 240], [161, 46, 299, 261, 50], [111, 18, 426, 226, 834], [547, 430, 260, 731, 253], [308, 423, 262, 748], [697, 634, 200], [159, 256, 42, 412], [978, 414], [861, 562, 816], [34, 882, 710], [560, 427, 769, 395, 691], [359, 625, 740, 572], [565, 616, 36, 668, 815, 247], [124, 52, 726, 582, 258], [435, 236, 655, 893, 724, 238], [654, 44, 364, 50, 712], [508, 872, 692], [160, 623, 933, 594, 750], [23, 725, 335, 416, 587, 844], [771, 875, 564, 242, 855], [268, 871, 550], [852, 439, 536, 659], [568, 868, 527, 234], [71, 894, 136, 891, 741, 431, 219], [920, 597, 126, 225], [775, 850, 264, 25], [915, 35, 496, 228], [403, 979, 941, 619, 744], [199, 596, 746], [823, 730, 254, 566], [302, 478, 884, 826, 875, 751, 257], [486, 18, 150], [914, 867, 508, 657, 231], [913, 413, 793], [152, 9, 743, 840, 243], [668, 248, 997, 839, 215], [533, 43, 715, 214], [283, 30, 542, 435, 476, 422, 235], [505, 4, 687, 842, 216], [528, 889, 589, 813, 226], [22, 931, 397, 636, 575], [133, 219, 745], [208, 260, 40, 500], [137, 231, 46, 783], [634, 747, 42, 992], [926, 54, 481], [682, 509, 615, 20, 402, 263], [796, 626, 34, 709, 228], [290, 598, 157], [767, 13, 827], [206, 742, 882, 537], [119, 605, 683, 398, 474], [289, 497, 637, 11, 716, 256], [697, 19, 833], [461, 622, 156], [576, 628, 731], [691, 709, 425, 258, 819, 235, 577], [146, 601, 685, 27, 132]];
 /* Nivelurile Coloanei cu randuri lungi si fara definitie — ca pe Facebook. */
 const COL_SPECIALE=[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180, 185];
 
@@ -1034,6 +1091,12 @@ if(!meta){
         masurare:true,notificat:false};
 }
 if(meta.masurare===undefined)meta.masurare=true;
+/* Câmpuri adăugate după lansare. Pentru cine are DEJA jocul, trebuie să pornească
+   „văzute”: altfel un om ajuns la nivelul 40 ar primi tutorialul de început.
+   Un câmp lipsă e indistinct de „fals”, deci verificarea se face pe progresul real. */
+const deJaJuca = (meta.zileJucate||0)>0 || GAMES.some(g=>(progress[g].unlocked||1)>1);
+if(meta.tutorVazut===undefined)  meta.tutorVazut  = deJaJuca;
+if(meta.jocuriVazut===undefined) meta.jocuriVazut = deJaJuca;
 function saveMeta(){save('aer_meta_v1',meta);}
 
 let coada=load('aer_queue_v1',[]);
@@ -1498,6 +1561,7 @@ function completeLevel(){
 document.getElementById('winNext').onclick=()=>{
   winModal.classList.remove('show');
   if(aratăInsignă())return;                       // insignele se arată înaintea nivelului următor
+  if(arataJocuri())return;                        // …iar celelalte jocuri, după insigne
   playLevel[current]=progress[current].unlocked;screen='play';render();
 };
 
@@ -1515,7 +1579,55 @@ function aratăInsignă(){
 document.getElementById('badgeClose').onclick=()=>{
   badgeModal.classList.remove('show');
   if(aratăInsignă())return;
+  if(arataJocuri())return;
   if(screen==='play'&&!dailyGame){playLevel[current]=progress[current].unlocked;}
+  render();
+};
+
+/* CUM SE JOACĂ — o singură dată, la prima deschidere.
+   Măsurat pe 84 de sesiuni: 12 au terminat nivelul 1. Restul n-au greșit, n-au
+   încercat. Jocul se deschide direct în modul de joc, deci omul primea o grilă și
+   o tastatură fără o singură instrucțiune. */
+const tutorModal=document.getElementById('tutorModal');
+function arataTutorial(){
+  if(meta.tutorVazut||current!=='col'||screen!=='play'||dailyGame)return false;
+  meta.tutorVazut=true;saveMeta();
+  tutorModal.classList.add('show');
+  track('tutorial');
+  return true;
+}
+document.getElementById('tutorClose').onclick=()=>{
+  sfx.tap();tutorModal.classList.remove('show');
+  track('tutorial_gata');
+  if(!aratăRecompensa()){verificaInsigne();aratăInsignă();}
+};
+
+/* CELELALTE DOUĂ JOCURI — o singură dată, după al treilea nivel.
+   Sub 6% dintre jucători le găseau singuri: 84 de sesiuni la Coloană, 5 la
+   Cuvântul ascuns, 4 la Anagramă. Două treimi din conținut erau invizibile.
+   Se oferă după nivelul 3, nu la început: întâi omul trebuie să prindă un joc. */
+const jocuriModal=document.getElementById('jocuriModal');
+function arataJocuri(){
+  if(meta.jocuriVazut||dailyGame||screen!=='play')return false;
+  if((progress.col.unlocked||1)<4)return false;
+  meta.jocuriVazut=true;saveMeta();
+  jocuriModal.classList.add('show');
+  track('jocuri_oferite');
+  return true;
+}
+document.querySelectorAll('#jocuriModal .btn-joc').forEach(b=>{
+  b.onclick=()=>{
+    sfx.tap();jocuriModal.classList.remove('show');
+    const g=b.dataset.joc;
+    track('joc_ales',g);
+    current=g;screen='play';dailyGame=null;
+    playLevel[current]=progress[current].unlocked;
+    setActiveTab(g);render();
+  };
+});
+document.getElementById('jocuriClose').onclick=()=>{
+  sfx.tap();jocuriModal.classList.remove('show');
+  if(screen==='play'&&!dailyGame)playLevel[current]=progress[current].unlocked;
   render();
 };
 
@@ -2196,16 +2308,42 @@ addEventListener('resize',()=>{clearTimeout(resizeT);resizeT=setTimeout(()=>{
 },250);});
 
 const inceputSesiune=Date.now();
-addEventListener('pagehide',()=>{
-  raporteazaAbandon();
+function raporteazaSesiune(){
   const minute=Math.round((Date.now()-inceputSesiune)/60000);
   track('sesiune',String(Math.min(60,minute)),
         String(GAMES.reduce((a,g)=>a+progress[g].unlocked-1,0)));
-});
+}
+addEventListener('pagehide',()=>{ raporteazaAbandon(); raporteazaSesiune(); });
+/* ⚠️ `pagehide` nu apucă să trimită din browserul intern al Facebook: din 95 de
+   deschideri măsurate au ajuns doar 14 evenimente `sesiune` — 15% acoperire, deci
+   nu se putea ști dacă oamenii pleacă în 3 secunde sau în 30. `visibilitychange`
+   se declanșează ÎNAINTE ca pagina să fie înghețată, deci prinde mult mai mult.
+   Nu cheamă `raporteazaAbandon`: ar șterge nivelul în curs la o simplă comutare
+   de aplicație, iar omul e încă pe el când se întoarce. */
+document.addEventListener('visibilitychange',()=>{ if(document.hidden)raporteazaSesiune(); });
+/* Cât stau oamenii, de fapt. Semnalele pleacă DIN joc, nu la ieșirea din el, deci
+   nu depind de un eveniment care se pierde. GoatCounter numără o cale o singură
+   dată pe sesiune, așa că cele cinci praguri dau direct pâlnia „au rămas cel
+   puțin atât”: prezent/5 = 40, prezent/30 = 12 se citește fără nicio socoteală.
+   ⚠️ Pragurile se socotesc pe timp VĂZUT, nu pe timp scurs de la încărcare.
+   Cu `setTimeout` fix, o pagină deschisă într-o filă de fundal își consuma
+   cronometrele degeaba și omul apărea ca și cum n-ar fi stat deloc — exact
+   invers decât ce măsurăm. */
+(function(){
+  const praguri=[5,15,30,60,120];
+  let vazut=0, ultim=Date.now(), i=0;
+  const ceas=setInterval(()=>{
+    const acum=Date.now();
+    if(!document.hidden)vazut+=(acum-ultim)/1000;
+    ultim=acum;
+    while(i<praguri.length&&vazut>=praguri[i])track('prezent',String(praguri[i++]));
+    if(i>=praguri.length)clearInterval(ceas);
+  },1000);
+})();
 
 /* PWA: dacă fișierele auxiliare sunt alături, jocul se poate adăuga pe ecranul
    principal și scapă de browserul intern al Facebook. Lipsa lor nu strică nimic. */
-const CACHE_NAME="aer-c3b3fe03af";
+const CACHE_NAME="aer-b955de574a";
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load',()=>{
     navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -2231,8 +2369,11 @@ updateHintBadge();
 golesteCoada();
 track('pornire', meta.zileJucate>0?'revenit':'nou');
 render();
-/* recompensa și insignele se arată după ce jocul e deja pe ecran */
-setTimeout(()=>{ if(!aratăRecompensa()){verificaInsigne();aratăInsignă();} },400);
+/* tutorialul, recompensa și insignele se arată după ce jocul e deja pe ecran.
+   Tutorialul e primul: la prima vizită recompensa oricum nu se arată, iar dacă
+   omul nu știe ce are de făcut, nimic altceva nu contează. */
+setTimeout(()=>{ if(arataTutorial())return;
+                 if(!aratăRecompensa()){verificaInsigne();aratăInsignă();} },400);
 </script>
 </body>
 </html>
