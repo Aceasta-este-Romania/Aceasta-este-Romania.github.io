@@ -353,7 +353,22 @@
      slabe de un efect scump exact în momentul primei impresii. */
   #tutorModal{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(34,38,43,.62);}
   .tutor-demo{margin:0 0 12px;}
-  .tutor-svg{width:100%;max-width:300px;height:auto;display:block;margin:0 auto;}
+  /* ⚠️ Butonul „Hai să încercăm” e SINGURA ieșire din tutorial, deci trebuie să
+     rămână pe ecran oriunde. Fereastra avea 506px până la marginea de jos; sub
+     ~510px de înălțime utilă butonul ieșea afară, iar în browserul intern al
+     Facebook barele de sus și de jos mănâncă exact atât. S-a văzut în date:
+     97 de oameni au văzut demonstrația, 21 au apăsat butonul, dar 54 au stat
+     peste 15 secunde — se uitau, n-aveau pe ce apăsa.
+     Desenul se micșorează odată cu ecranul (raportul 300/262 ⇒ 37vh lățime
+     plafonează înălțimea la ~32vh), în loc să împingă butonul afară. */
+  .tutor-svg{width:100%;max-width:min(300px,37vh);height:auto;display:block;margin:0 auto;}
+  @media (max-height:660px){
+    #tutorModal .modal{padding:16px 16px 14px;}
+    #tutorModal .lab{margin-bottom:4px;}
+    .tutor-demo{margin:0 0 8px;}
+    #tutorModal .txt{font-size:15px;line-height:1.3;margin-bottom:11px;}
+    #tutorModal .close{padding:11px 20px;}
+  }
   .t-cel{fill:#fff;}
   .t-gol{fill:var(--orange);}
   .t-tasta{fill:#eef3ef;stroke:#d5e0d8;stroke-width:1.5;}
@@ -550,7 +565,7 @@
   </svg>
   </div>
   <div class="txt">Apeși pe <b>pătratul portocaliu</b>, apoi pe literă.<br>
-    Literele lipsă, citite de sus în jos, formează cuvântul.</div>
+    Literele lipsă, de sus în jos, dau cuvântul.</div>
   <button class="close" id="tutorClose">Hai să încercăm</button>
 </div></div>
 
@@ -2429,7 +2444,7 @@ document.addEventListener('visibilitychange',()=>{ if(document.hidden)raporteaza
 
 /* PWA: dacă fișierele auxiliare sunt alături, jocul se poate adăuga pe ecranul
    principal și scapă de browserul intern al Facebook. Lipsa lor nu strică nimic. */
-const CACHE_NAME="aer-ffc48f511a";
+const CACHE_NAME="aer-2581104107";
 if('serviceWorker' in navigator && location.protocol.startsWith('http')){
   addEventListener('load',()=>{
     navigator.serviceWorker.register('sw.js').catch(()=>{});
@@ -2456,10 +2471,21 @@ golesteCoada();
 track('pornire', meta.zileJucate>0?'revenit':'nou');
 render();
 /* tutorialul, recompensa și insignele se arată după ce jocul e deja pe ecran.
-   Tutorialul e primul: la prima vizită recompensa oricum nu se arată, iar dacă
-   omul nu știe ce are de făcut, nimic altceva nu contează. */
-setTimeout(()=>{ if(arataTutorial())return;
-                 if(!aratăRecompensa()){verificaInsigne();aratăInsignă();} },400);
+   Pe ecran tutorialul are prioritate — dacă omul nu știe ce are de făcut, nimic
+   altceva nu contează. Dar recompensa se REVENDICĂ înainte, mereu.
+   ⚠️ Prima variantă era `if(arataTutorial())return;` ÎNAINTE de recompensă. La un
+   om nou se ieșea din funcție și `aratăRecompensa()` nu mai era apelată niciodată,
+   deci `recompensaZilei()` nu mai scria `meta.ultimaZi` și nu mai incrementa
+   `meta.zileJucate`. Consecința s-a văzut în date: același om era numărat „nou” și
+   la vizita următoare (`track('pornire', meta.zileJucate>0?'revenit':'nou')`), iar
+   `recompensa_zilnica` a căzut de la 92% la 54% din vizitatorii noi. Pe deasupra,
+   nu primea nici indiciul zilei. Aici recompensa se ia în tăcere — la prima vizită
+   fereastra ei e oricum suprimată — și abia apoi se decide ce se AFIȘEAZĂ. */
+setTimeout(()=>{
+  const recompensaAratata = aratăRecompensa();
+  if(arataTutorial())return;
+  if(!recompensaAratata){verificaInsigne();aratăInsignă();}
+},400);
 </script>
 </body>
 </html>
